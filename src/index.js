@@ -40,6 +40,7 @@ const earthPlanet = new ThreeSceneBuilder()
             y: 0.0001,
         },
         name: 'earth',
+        geometryProps: [50, 100, 50]
     })
     .addEventListener({
         type: 'mousemove',

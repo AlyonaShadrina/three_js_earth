@@ -36,7 +36,7 @@ export default class ThreeSceneBuilder {
     }
 
     initCamera({
-        positionZ = 0,
+        positionZ = 20,
         positionY = 0,
         positionX = 0,
         cameraType = 'Perspective',
@@ -65,7 +65,7 @@ export default class ThreeSceneBuilder {
 
     createMesh({
         geometryType = 'Sphere',
-        geometryProps = [50, 100, 50],
+        geometryProps = [5, 10, 10],
         materialType = 'Basic',
         materialProps = {
             color: 'lightblue',
