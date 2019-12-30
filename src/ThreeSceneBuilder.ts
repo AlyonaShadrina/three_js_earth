@@ -1,3 +1,4 @@
+// import { WebGLRenderer, Color, Scene, PerspectiveCamera } from 'three';
 import * as THREE from 'three';
 
 import { EffectComposer } from './postprocessing/EffectComposer';
@@ -6,19 +7,38 @@ import { RenderPass } from './postprocessing/RenderPass';
 
 let i = 0;
 
+type initScene = {
+    background?: typeof THREE.Color | THREE.Texture,
+}
+
+// TODO: some conditional props (depending on type)
+type initCamera = {
+    positionZ?: number,
+    positionY?: number,
+    positionX?: number,
+    cameraType?: 'Perspective' | 'Orthographic' | 'Cube' | 'Stereo',
+    cameraProps?: [number, number, number, number],
+}
+
+type initLight = {
+    lightType?: 'Directional' | 'Ambient' | 'Hemisphere' | 'Point' | 'Spot' | 'RectArea',
+    lightProps?: [number, number],
+    position?: [number, number, number],
+}
+
 export default class ThreeSceneBuilder {
-    constructor(props) {
-        this.renderer;
-        this.scene;
-        this.camera;
-        this.light;
-        this.meshes = {};
-        this.rotationStep = {
-            x: 0,
-            y: 0.0001,
-        };
-        this.composer;
-    }
+    renderer: THREE.WebGLRenderer;
+    scene: any;
+    camera: any;
+    light: any;
+    meshes: any = {};
+    composer: any;
+    rotationStep: any = {
+        x: 0,
+        y: 0.0001,
+    };
+    background: typeof THREE.Color;
+
 
     initRenderer() {
         this.renderer = new THREE.WebGLRenderer();
@@ -27,9 +47,10 @@ export default class ThreeSceneBuilder {
         return this;
     }
 
+    // THREE.Color() as any - seems to be because of 'class Color' not 'implements'
     initScene({
-        background = new THREE.Color('#888'),
-    } = {}) {
+        background = new (THREE.Color() as any)
+    }: initScene): this {
         this.scene = new THREE.Scene();
         this.scene.background = background;
         return this;
@@ -41,7 +62,8 @@ export default class ThreeSceneBuilder {
         positionX = 0,
         cameraType = 'Perspective',
         cameraProps = [60, window.innerWidth / window.innerHeight, 1, 1000],
-    } = {}) {
+    }: initCamera = {}) {
+        // @ts-ignore
         this.camera = new THREE[`${cameraType}Camera`](...cameraProps);
         this.camera.position.z = positionZ;
         this.camera.position.y = positionY;
@@ -53,7 +75,8 @@ export default class ThreeSceneBuilder {
         lightType = 'Directional',
         lightProps = [0xFFFFFF, 1],
         position = [.1, 0, .1],
-    } = {}) {
+    }: initLight = {}) {
+        // @ts-ignore
         this.light = new THREE[`${lightType}Light`](...lightProps);
         this.light.position.set(...position);
         if (!this.scene) {
@@ -75,7 +98,9 @@ export default class ThreeSceneBuilder {
         rotationStep = {},
         name = i,
     } = {}) {
+        // @ts-ignore
         const geometry = new THREE[`${geometryType}BufferGeometry`](...geometryProps);
+        // @ts-ignore
         const material = new THREE[`Mesh${materialType}Material`](materialProps);
         const mesh = new THREE.Mesh(geometry, material);
         this.meshes[name] = {
@@ -83,9 +108,9 @@ export default class ThreeSceneBuilder {
             rotationStep,
         };
 
-        Object.keys(rotation).map(axis => {
-            mesh.rotation[axis] = rotation[axis];
-        });
+        // Object.keys(rotation).map(axis => {
+        //     mesh.rotation[axis] = rotation[axis];
+        // });
 
         if (!this.scene) {
             console.error('You have to .initScene() before .createMesh()')
@@ -98,13 +123,14 @@ export default class ThreeSceneBuilder {
 
     addEventListener({
         type = 'click',
-        listener = () => null,
+         // @ts-ignore
+         listener = (a: any, b: any) => null,
     } = {}) {
-        this.renderer.domElement.addEventListener(type, (e) => listener(e, this));
+        this.renderer.domElement.addEventListener(type, (e: any) => listener(e, this));
         return this;
     }
 
-    addEffect(effect) {
+    addEffect(effect: any) {
         if (!this.composer) {
             const renderModel = new RenderPass(this.scene, this.camera);
             this.composer = new EffectComposer(this.renderer);
@@ -122,7 +148,7 @@ export default class ThreeSceneBuilder {
                 mesh.mesh.rotation[axis] += mesh.rotationStep[axis]
             })
         });
-        this.renderer.render(this.scene, this.camera)
+        this.renderer.render(this.scene, this.camera);
         if (this.composer) {
             this.composer.render();
         }

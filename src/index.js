@@ -10,6 +10,7 @@ import pz from './assets/dark-s_pz.jpg';
 import { FilmPass } from './postprocessing/FilmPass';
 import ThreeSceneBuilder from './ThreeSceneBuilder';
 
+
 const loader = new TextureLoader();
 
 const mouseListener = (e, thisThree) => {
@@ -19,8 +20,7 @@ const mouseListener = (e, thisThree) => {
     thisThree.meshes['earth'].rotationStep.y = -coordX / 1000000;
 };
 
-var effectFilm = new FilmPass(1, 1, 2048, false);
-
+const effectFilm = new FilmPass(1, 1, 2048, false);
 
 const earthPlanet = new ThreeSceneBuilder()
     .initRenderer()
@@ -40,7 +40,7 @@ const earthPlanet = new ThreeSceneBuilder()
             y: 0.0001,
         },
         name: 'earth',
-        geometryProps: [50, 100, 50]
+        geometryProps: [50, 100, 50],
     })
     .addEventListener({
         type: 'mousemove',
