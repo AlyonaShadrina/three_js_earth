@@ -1,18 +1,18 @@
 import * as THREE from 'three';
 
 import { EffectComposer } from './postprocessing/EffectComposer';
-import { FilmPass } from './postprocessing/FilmPass';
 import { RenderPass } from './postprocessing/RenderPass';
 
 
-// TODO: function to accept and run event listeners
+let i = 0;
+
 export default class ThreeSceneBuilder {
     constructor(props) {
         this.renderer;
         this.scene;
         this.camera;
         this.light;
-        this.meshArray = [];
+        this.meshes = {};
         this.rotationStep = {
             x: 0,
             y: 0.0001,
@@ -73,14 +73,15 @@ export default class ThreeSceneBuilder {
         },
         rotation = {},
         rotationStep = {},
+        name = i,
     } = {}) {
         const geometry = new THREE[`${geometryType}BufferGeometry`](...geometryProps);
         const material = new THREE[`Mesh${materialType}Material`](materialProps);
         const mesh = new THREE.Mesh(geometry, material);
-        this.meshArray.push({
+        this.meshes[name] = {
             mesh,
             rotationStep,
-        });
+        };
 
         Object.keys(rotation).map(axis => {
             mesh.rotation[axis] = rotation[axis];
@@ -91,33 +92,32 @@ export default class ThreeSceneBuilder {
         }
 
         this.scene.add(mesh);
+        i++;
         return this;
     }
 
-    initMouseListener() {
-        this.renderer.domElement.addEventListener('mousemove', (e) => {
-            const coordX = e.clientX - this.renderer.domElement.width / 2;
-            const coordY = e.clientY - this.renderer.domElement.height / 2;
-            this.rotationStep.x = -coordY / 1000000;
-            this.rotationStep.y = -coordX / 1000000;
-        });
+    addEventListener({
+        type = 'click',
+        listener = () => null,
+    } = {}) {
+        this.renderer.domElement.addEventListener(type, (e) => listener(e, this));
         return this;
     }
 
-    initComposer() {
-        var renderModel = new RenderPass(this.scene, this.camera);
+    addEffect(effect) {
+        if (!this.composer) {
+            const renderModel = new RenderPass(this.scene, this.camera);
+            this.composer = new EffectComposer(this.renderer);
+            this.composer.addPass(renderModel);
+        }
 
-        var effectFilm = new FilmPass(1, 1, 2048, false);
-
-        this.composer = new EffectComposer(this.renderer);
-
-        this.composer.addPass(renderModel);
-        this.composer.addPass(effectFilm);
+        this.composer.addPass(effect);
         return this;
     }
 
     update() {
-        this.meshArray.map(mesh => {
+        Object.keys(this.meshes).map(meshName => {
+            const mesh = this.meshes[meshName];
             Object.keys(mesh.rotationStep).map(axis => {
                 mesh.mesh.rotation[axis] += mesh.rotationStep[axis]
             })

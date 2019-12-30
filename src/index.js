@@ -1,4 +1,4 @@
-import * as THREE from 'three';
+import { TextureLoader, CubeTextureLoader } from 'three';
 
 import earth from './assets/BlackMarble_2016_3km.jpg';
 import nx from './assets/dark-s_nx.jpg';
@@ -7,15 +7,25 @@ import nz from './assets/dark-s_nz.jpg';
 import px from './assets/dark-s_px.jpg';
 import py from './assets/dark-s_py.jpg';
 import pz from './assets/dark-s_pz.jpg';
+import { FilmPass } from './postprocessing/FilmPass';
 import ThreeSceneBuilder from './ThreeSceneBuilder';
 
+const loader = new TextureLoader();
 
-const loader = new THREE.TextureLoader();
+const mouseListener = (e, thisThree) => {
+    const coordX = e.clientX - thisThree.renderer.domElement.width / 2;
+    const coordY = e.clientY - thisThree.renderer.domElement.height / 2;
+    thisThree.meshes['earth'].rotationStep.x = -coordY / 1000000;
+    thisThree.meshes['earth'].rotationStep.y = -coordX / 1000000;
+};
 
-const all = new ThreeSceneBuilder()
+var effectFilm = new FilmPass(1, 1, 2048, false);
+
+
+const earthPlanet = new ThreeSceneBuilder()
     .initRenderer()
     .initScene({
-        background: new THREE.CubeTextureLoader().load( [ px, nx, py, ny, pz , nz, ] ),
+        background: new CubeTextureLoader().load( [px, nx, py, ny, pz , nz] ),
     })
     .initCamera({
         positionZ: 45,
@@ -28,14 +38,18 @@ const all = new ThreeSceneBuilder()
         rotation: { y: -120 * Math.PI / 180 },
         rotationStep: {
             y: 0.0001,
-        }
+        },
+        name: 'earth',
     })
-    // .initMouseListener()
-    // .initComposer();
+    .addEventListener({
+        type: 'mousemove',
+        listener: mouseListener,
+    })
+    .addEffect(effectFilm);
 
 render();
 
 function render() {
     requestAnimationFrame(render);
-    all.update();
+    earthPlanet.update();
 }
