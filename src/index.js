@@ -8,7 +8,7 @@ import px from './assets/dark-s_px.jpg';
 import py from './assets/dark-s_py.jpg';
 import pz from './assets/dark-s_pz.jpg';
 import { FilmPass } from './postprocessing/FilmPass';
-import ThreeSceneBuilder from './ThreeSceneBuilder';
+import ThreeSceneBuilder from './ThreeSceneBuilder/ThreeSceneBuilder';
 
 
 const loader = new TextureLoader();
