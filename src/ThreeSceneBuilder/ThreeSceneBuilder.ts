@@ -1,4 +1,3 @@
-// import { WebGLRenderer, Color, Scene, PerspectiveCamera } from 'three';
 import * as THREE from 'three';
 
 import { EffectComposer } from '../postprocessing/EffectComposer';
@@ -58,7 +57,7 @@ export default class ThreeSceneBuilder {
             y: 0,
             z: 20,
         },
-    }: Camera) {
+    }: Camera = {}) {
         this.camera = new THREE[`${camera.type}Camera`](...camera.props);
 
         Object.keys(position).map(axis => {
@@ -73,8 +72,10 @@ export default class ThreeSceneBuilder {
     }
 
     initLight({
-        lightType = 'Directional',
-        lightProps = [0xFFFFFF, 1],
+        light = {
+            type: 'Directional',
+            props: [0xFFFFFF, 1],
+        },
         rotation = {},
         position = {
             x: .1,
@@ -86,7 +87,7 @@ export default class ThreeSceneBuilder {
             console.error('You have to .Scene() before .Light()')
         }
 
-        this.light = new THREE[`${lightType}Light`](...lightProps);
+        this.light = new THREE[`${light.type}Light`](...light.props);
         // this.light.position.set(...position);
         // this.light.rotation.set(...rotation);
 

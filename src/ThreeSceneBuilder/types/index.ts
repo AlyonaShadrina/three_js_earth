@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { CubeCamera, OrthographicCamera, PerspectiveCamera, StereoCamera } from "./Camera";
+import { AmbientLight, DirectionalLight, HemisphereLight, PointLight, RectAreaLight, SpotLight } from "./Light";
 
 
 type Coordinates3D = {
@@ -19,12 +20,11 @@ export type Scene = {
 }
 
 export type Camera = Object3D & {
-    camera: PerspectiveCamera | OrthographicCamera | CubeCamera | StereoCamera
+    camera?: PerspectiveCamera | OrthographicCamera | CubeCamera | StereoCamera
 }
 
 export type Light = Object3D & {
-    lightType?: 'Directional' | 'Ambient' | 'Hemisphere' | 'Point' | 'Spot' | 'RectArea',
-    lightProps?: [number, number] | [] | [] | [] | [] | [],
+    light?: DirectionalLight | AmbientLight | HemisphereLight | PointLight | SpotLight | RectAreaLight,
 }
 
 export type Mesh = Object3D & {
