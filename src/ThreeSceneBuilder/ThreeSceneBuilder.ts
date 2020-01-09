@@ -48,18 +48,18 @@ export default class ThreeSceneBuilder {
     }
 
     initCamera({
-        cameraType = 'Perspective',
-        cameraProps = [60, window.innerWidth / window.innerHeight, 1, 1000],
+        camera = {
+            type: 'Perspective',
+            props: [60, window.innerWidth / window.innerHeight, 1, 1000],
+        },
         rotation = {},
         position = {
             x: 0,
             y: 0,
             z: 20,
         },
-    }: Camera = {}) {
-        this.camera = new THREE[`${cameraType}Camera`](...cameraProps);
-        // this.camera.position.set(...position);
-        // this.camera.rotation.set(...rotation);
+    }: Camera) {
+        this.camera = new THREE[`${camera.type}Camera`](...camera.props);
 
         Object.keys(position).map(axis => {
             this.camera.position[axis] = position[axis];
