@@ -28,14 +28,15 @@ const earthPlanet = new ThreeSceneBuilder()
         background: new CubeTextureLoader().load( [px, nx, py, ny, pz , nz] ),
     })
     .initCamera({
-        positionZ: 45,
-        positionY: 35,
-        positionX: 30 * Math.PI / 180,
+        position: [0, 35, 45],
+        rotation: [30 * Math.PI / 180, 0, 0]
     })
     .initLight()
     .createMesh({
         materialProps: { map: loader.load(earth) },
-        rotation: { y: -120 * Math.PI / 180 },
+        rotation: {
+            y: -120 * Math.PI / 180
+        },
         rotationStep: {
             y: 0.0001,
         },

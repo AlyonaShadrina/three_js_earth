@@ -1,25 +1,35 @@
 // import { WebGLRenderer, Color, Scene, PerspectiveCamera } from 'three';
-import * as THREE from 'three'; // why?
+import * as THREE from 'three';
 
 import { EffectComposer } from '../postprocessing/EffectComposer';
 import { RenderPass } from '../postprocessing/RenderPass';
-import { initCamera, initLight, initScene } from "./types";
+import { Camera, Light, initScene, Mesh } from "./types";
 
 
 let i = 0;
 
+type RotationStep = {
+    x?: number,
+    y?: number,
+    z?: number,
+}
+
+type MeshProps = {
+    mesh: THREE.Mesh,
+    rotationStep?: RotationStep,
+}
+
+type MeshesObject = {
+    [propName: string]: MeshProps;
+}
+
 export default class ThreeSceneBuilder {
     renderer: THREE.WebGLRenderer;
-    scene: any;
-    camera: any;
-    light: any;
-    meshes: any = {};
+    scene: THREE.Scene;
+    camera: THREE.Camera;
+    light: THREE.Light;
+    meshes: MeshesObject = {};
     composer: any;
-    rotationStep: any = {
-        x: 0,
-        y: 0.0001,
-    };
-    background: typeof THREE.Color;
 
 
     initRenderer() {
@@ -29,11 +39,8 @@ export default class ThreeSceneBuilder {
         return this;
     }
 
-    // THREE.Color() as any - seems to be because of 'class Color' not 'implements'
     initScene({
-        // why ?
-        // background = new THREE.Color()
-        background = new (THREE.Color() as any)
+        background = new THREE.Color()
     }: initScene): this {
         this.scene = new THREE.Scene();
         this.scene.background = background;
@@ -41,29 +48,31 @@ export default class ThreeSceneBuilder {
     }
 
     initCamera({
-        positionZ = 20,
-        positionY = 0,
-        positionX = 0,
         cameraType = 'Perspective',
         cameraProps = [60, window.innerWidth / window.innerHeight, 1, 1000],
-    }: initCamera = {}) {
+        rotation = [0, 0, 0],
+        position = [0, 0, 20],
+    }: Camera = {}) {
         this.camera = new THREE[`${cameraType}Camera`](...cameraProps);
-        this.camera.position.z = positionZ;
-        this.camera.position.y = positionY;
-        this.camera.rotation.x = positionX;
+        this.camera.position.set(...position);
+        this.camera.rotation.set(...rotation);
         return this;
     }
 
     initLight({
         lightType = 'Directional',
         lightProps = [0xFFFFFF, 1],
+        rotation = [0, 0, 0],
         position = [.1, 0, .1],
-    }: initLight = {}) {
+    }: Light = {}) {
+        if (!this.scene) {
+            console.error('You have to .initScene() before .Light()')
+        }
+
         this.light = new THREE[`${lightType}Light`](...lightProps);
         this.light.position.set(...position);
-        if (!this.scene) {
-            console.error('You have to .initScene() before .initLight()')
-        }
+        this.light.rotation.set(...rotation);
+
         this.scene.add(this.light);
         return this;
     }
@@ -79,7 +88,11 @@ export default class ThreeSceneBuilder {
         rotation = {},
         rotationStep = {},
         name = i,
-    } = {}) {
+    }: Mesh = {}) {
+        if (!this.scene) {
+            console.error('You have to .initScene() before .createMesh()')
+        }
+
         const geometry = new THREE[`${geometryType}BufferGeometry`](...geometryProps);
         const material = new THREE[`Mesh${materialType}Material`](materialProps);
         const mesh = new THREE.Mesh(geometry, material);
@@ -89,14 +102,8 @@ export default class ThreeSceneBuilder {
         };
 
         Object.keys(rotation).map(axis => {
-            // why
-            // console.log('mesh.rotation', mesh.isMesh);
-            // mesh.rotation[axis] = rotation[axis];
+            mesh.rotation[axis] = rotation[axis];
         });
-
-        if (!this.scene) {
-            console.error('You have to .initScene() before .createMesh()')
-        }
 
         this.scene.add(mesh);
         i++;
