@@ -88,8 +88,6 @@ export default class ThreeSceneBuilder {
         }
 
         this.light = new THREE[`${light.type}Light`](...light.props);
-        // this.light.position.set(...position);
-        // this.light.rotation.set(...rotation);
 
         Object.keys(position).map(axis => {
             this.light.position[axis] = position[axis];
@@ -104,12 +102,16 @@ export default class ThreeSceneBuilder {
     }
 
     createMesh({
-        geometryType = 'Sphere',
-        geometryProps = [5, 10, 10],
-        materialType = 'Basic',
-        materialProps = {
-            color: 'lightblue',
-            wireframe: true,
+        geometry = {
+            type: 'Sphere',
+            props: [5, 10, 10],
+        },
+        material = {
+            type: 'Basic',
+            props: {
+               color: 'lightblue',
+               wireframe: true,
+            },
         },
         rotation = {},
         rotationStep = {},
@@ -119,15 +121,13 @@ export default class ThreeSceneBuilder {
             console.error('You have to .Scene() before .createMesh()')
         }
 
-        const geometry = new THREE[`${geometryType}BufferGeometry`](...geometryProps);
-        const material = new THREE[`Mesh${materialType}Material`](materialProps);
-        const mesh = new THREE.Mesh(geometry, material);
+        const ThreeGeometry = new THREE[`${geometry.type}BufferGeometry`](...geometry.props);
+        const ThreeMaterial = new THREE[`Mesh${material.type}Material`](material.props);
+        const mesh = new THREE.Mesh(ThreeGeometry, ThreeMaterial);
         this.meshes[name] = {
             mesh,
             rotationStep,
         };
-
-        // mesh.rotation.set(...rotation);
 
         Object.keys(rotation).map(axis => {
             mesh.rotation[axis] = rotation[axis];

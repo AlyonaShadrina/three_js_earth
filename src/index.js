@@ -38,7 +38,14 @@ const earthPlanet = new ThreeSceneBuilder()
     })
     .initLight()
     .createMesh({
-        materialProps: { map: loader.load(earth) },
+        geometry: {
+            type: 'Sphere',
+            props: [50, 100, 50],
+        },
+        material: {
+            type: 'Basic',
+            props: { map: loader.load(earth) },
+        },
         rotation: {
             y: -120 * Math.PI / 180
         },
@@ -46,7 +53,6 @@ const earthPlanet = new ThreeSceneBuilder()
             y: 0.0001,
         },
         name: 'earth',
-        geometryProps: [50, 100, 50],
     })
     .addEventListener({
         type: 'mousemove',
