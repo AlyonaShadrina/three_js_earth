@@ -33,3 +33,17 @@ export type Mesh = Object3D & {
     material?: BasicMaterial | PhongMaterial,
     name?: string | number,
 }
+
+type MeshProps = {
+    mesh: THREE.Mesh,
+    rotationStep?: Coordinates3D,
+}
+
+export type MeshesObject = {
+    [propName: string]: MeshProps;
+}
+
+export type EventListener = {
+    type: string,
+    listener(e: any, thisThree: any): void;
+}

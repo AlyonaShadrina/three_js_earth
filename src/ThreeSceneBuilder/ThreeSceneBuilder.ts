@@ -2,25 +2,10 @@ import * as THREE from 'three';
 
 import { EffectComposer } from '../postprocessing/EffectComposer';
 import { RenderPass } from '../postprocessing/RenderPass';
-import { Camera, Light, Scene, Mesh } from "./types";
+import { Camera, EventListener, Light, Mesh, MeshesObject, Scene } from "./types";
 
 
 let i = 0;
-
-type RotationStep = {
-    x?: number,
-    y?: number,
-    z?: number,
-}
-
-type MeshProps = {
-    mesh: THREE.Mesh,
-    rotationStep?: RotationStep,
-}
-
-type MeshesObject = {
-    [propName: string]: MeshProps;
-}
 
 export default class ThreeSceneBuilder {
     renderer: THREE.WebGLRenderer;
@@ -138,11 +123,13 @@ export default class ThreeSceneBuilder {
         return this;
     }
 
+
+
     addEventListener({
-        type = 'click',
-        listener = (e: any, thisThree: any) => null,
-    } = {}) {
-        this.renderer.domElement.addEventListener(type, (e: any) => listener(e, this));
+        type,
+        listener,
+    }: EventListener) {
+        this.renderer.domElement.addEventListener(type, (e) => listener(e, this));
         return this;
     }
 
