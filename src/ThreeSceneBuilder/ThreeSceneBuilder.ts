@@ -3,7 +3,7 @@ import * as THREE from 'three';
 
 import { EffectComposer } from '../postprocessing/EffectComposer';
 import { RenderPass } from '../postprocessing/RenderPass';
-import { Camera, Light, initScene, Mesh } from "./types";
+import { Camera, Light, Scene, Mesh } from "./types";
 
 
 let i = 0;
@@ -41,7 +41,7 @@ export default class ThreeSceneBuilder {
 
     initScene({
         background = new THREE.Color()
-    }: initScene): this {
+    }: Scene): this {
         this.scene = new THREE.Scene();
         this.scene.background = background;
         return this;
@@ -50,28 +50,53 @@ export default class ThreeSceneBuilder {
     initCamera({
         cameraType = 'Perspective',
         cameraProps = [60, window.innerWidth / window.innerHeight, 1, 1000],
-        rotation = [0, 0, 0],
-        position = [0, 0, 20],
+        rotation = {},
+        position = {
+            x: 0,
+            y: 0,
+            z: 20,
+        },
     }: Camera = {}) {
         this.camera = new THREE[`${cameraType}Camera`](...cameraProps);
-        this.camera.position.set(...position);
-        this.camera.rotation.set(...rotation);
+        // this.camera.position.set(...position);
+        // this.camera.rotation.set(...rotation);
+
+        Object.keys(position).map(axis => {
+            this.camera.position[axis] = position[axis];
+        });
+
+        Object.keys(rotation).map(axis => {
+            this.camera.rotation[axis] = rotation[axis];
+        });
+
         return this;
     }
 
     initLight({
         lightType = 'Directional',
         lightProps = [0xFFFFFF, 1],
-        rotation = [0, 0, 0],
-        position = [.1, 0, .1],
+        rotation = {},
+        position = {
+            x: .1,
+            y: 0,
+            z: .1,
+        },
     }: Light = {}) {
         if (!this.scene) {
-            console.error('You have to .initScene() before .Light()')
+            console.error('You have to .Scene() before .Light()')
         }
 
         this.light = new THREE[`${lightType}Light`](...lightProps);
-        this.light.position.set(...position);
-        this.light.rotation.set(...rotation);
+        // this.light.position.set(...position);
+        // this.light.rotation.set(...rotation);
+
+        Object.keys(position).map(axis => {
+            this.light.position[axis] = position[axis];
+        });
+
+        Object.keys(rotation).map(axis => {
+            this.light.rotation[axis] = rotation[axis];
+        });
 
         this.scene.add(this.light);
         return this;
@@ -90,7 +115,7 @@ export default class ThreeSceneBuilder {
         name = i,
     }: Mesh = {}) {
         if (!this.scene) {
-            console.error('You have to .initScene() before .createMesh()')
+            console.error('You have to .Scene() before .createMesh()')
         }
 
         const geometry = new THREE[`${geometryType}BufferGeometry`](...geometryProps);
@@ -100,6 +125,8 @@ export default class ThreeSceneBuilder {
             mesh,
             rotationStep,
         };
+
+        // mesh.rotation.set(...rotation);
 
         Object.keys(rotation).map(axis => {
             mesh.rotation[axis] = rotation[axis];
