@@ -1,7 +1,10 @@
 import * as THREE from "three";
 import { CubeCamera, OrthographicCamera, PerspectiveCamera, StereoCamera } from "./Camera";
 import { AmbientLight, DirectionalLight, HemisphereLight, PointLight, RectAreaLight, SpotLight } from "./Light";
-import { BasicMaterial, BoxGeometry, PhongMaterial, SphereGeometry } from "./Mesh";
+import {
+    BasicMaterial, BoxGeometry, TorusGeometry, RingGeometry, CircleGeometry,
+    PhongMaterial, SphereGeometry
+} from "./Mesh";
 
 
 type Coordinates3D = {
@@ -29,7 +32,7 @@ export type Light = Object3D & {
 }
 
 export type Mesh = Object3D & {
-    geometry?: SphereGeometry | BoxGeometry,
+    geometry?: SphereGeometry | BoxGeometry | TorusGeometry | RingGeometry | CircleGeometry,
     material?: BasicMaterial | PhongMaterial,
     name?: string | number,
 }

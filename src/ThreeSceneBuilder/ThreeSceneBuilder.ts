@@ -100,6 +100,7 @@ export default class ThreeSceneBuilder {
                wireframe: true,
             },
         },
+        position = {},
         rotation = {},
         rotationStep = {},
         name = i,
@@ -116,6 +117,9 @@ export default class ThreeSceneBuilder {
             rotationStep,
         };
 
+        Object.keys(position).map(axis => {
+            mesh.position[axis] = position[axis];
+        });
         Object.keys(rotation).map(axis => {
             mesh.rotation[axis] = rotation[axis];
         });

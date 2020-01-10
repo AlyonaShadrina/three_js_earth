@@ -12,6 +12,18 @@ export type BoxGeometry = {
     type: 'Box',
     props: [number, number, number, number, number, number],
 }
+export type TorusGeometry = {
+    type: 'Torus',
+    props: [number, number, number, number],
+}
+export type RingGeometry = {
+    type: 'Torus',
+    props: [number, number, number],
+}
+export type CircleGeometry = {
+    type: 'Circle',
+    props: [number, number],
+}
 
 // material
 export type BasicMaterial = {

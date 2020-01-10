@@ -5,6 +5,7 @@ module.exports = {
         index: './src/pages/index.js',
         earth: './src/pages/earth/index.js',
         grid: './src/pages/grid/index.js',
+        circle: './src/pages/circle/index.js',
     },
     mode: "development",
     output: {
