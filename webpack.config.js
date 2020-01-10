@@ -1,4 +1,6 @@
 const path = require("path");
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+
 module.exports = {
     entry: {
         index: './src/pages/index.js',
@@ -6,7 +8,8 @@ module.exports = {
     },
     mode: "development",
     output: {
-        filename: "./[name].js"
+        filename: "./[name].js",
+        path: __dirname + '/dist'
     },
     module: {
         rules: [
