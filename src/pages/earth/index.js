@@ -1,5 +1,6 @@
 import { TextureLoader, CubeTextureLoader } from 'three';
 import "../../style.css";
+import "../../style-dark.css";
 import "../../navigation";
 
 import earth from '../../assets/BlackMarble_2016_3km.jpg';
