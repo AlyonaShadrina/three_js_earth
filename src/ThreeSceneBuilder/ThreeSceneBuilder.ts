@@ -25,7 +25,7 @@ export default class ThreeSceneBuilder {
 
     initScene({
         background = new THREE.Color()
-    }: Scene): this {
+    }: Scene = {}): this {
         this.scene = new THREE.Scene();
         this.scene.background = background;
         return this;

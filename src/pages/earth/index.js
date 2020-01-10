@@ -1,14 +1,14 @@
 import { TextureLoader, CubeTextureLoader } from 'three';
 
-import earth from './assets/BlackMarble_2016_3km.jpg';
-import nx from './assets/dark-s_nx.jpg';
-import ny from './assets/dark-s_ny.jpg';
-import nz from './assets/dark-s_nz.jpg';
-import px from './assets/dark-s_px.jpg';
-import py from './assets/dark-s_py.jpg';
-import pz from './assets/dark-s_pz.jpg';
-import { FilmPass } from './postprocessing/FilmPass';
-import ThreeSceneBuilder from './ThreeSceneBuilder/ThreeSceneBuilder';
+import earth from '../../assets/BlackMarble_2016_3km.jpg';
+import nx from '../../assets/dark-s_nx.jpg';
+import ny from '../../assets/dark-s_ny.jpg';
+import nz from '../../assets/dark-s_nz.jpg';
+import px from '../../assets/dark-s_px.jpg';
+import py from '../../assets/dark-s_py.jpg';
+import pz from '../../assets/dark-s_pz.jpg';
+import { FilmPass } from '../../postprocessing/FilmPass';
+import ThreeSceneBuilder from '../../ThreeSceneBuilder/ThreeSceneBuilder';
 
 
 const loader = new TextureLoader();
