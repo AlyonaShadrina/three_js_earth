@@ -16,8 +16,10 @@ export default class ThreeSceneBuilder {
     composer: any;
 
 
-    initRenderer() {
-        this.renderer = new THREE.WebGLRenderer();
+    initRenderer({
+        props = {}
+    } = {}) {
+        this.renderer = new THREE.WebGLRenderer(props);
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(this.renderer.domElement);
         return this;
