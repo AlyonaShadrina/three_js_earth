@@ -14,43 +14,45 @@ basic.initRenderer()
     .createMesh({
          geometry: {
              type: 'Ring',
-             props: [7, 8, 30]
+             props: [7, 7, 30]
          }
     })
 
 
-const circles = [
-    {
-        geometry: [2.7, 20],
-        position: {
-            y: -.5,
-        }
-    },
-    {
-        geometry: [1.8, 20],
-        position: {
-            y: 3.3,
-            x: -2,
-        }
-    },
-    {
-        geometry: [2.2, 20],
-        position: {
-            y: .7,
-            x: 3.6,
-        }
-    },
-];
+// const circles = [
+//     {
+//         geometry: [2.7, 20],
+//         position: {
+//             y: -.5,
+//         }
+//     },
+//     {
+//         geometry: [1.8, 20],
+//         position: {
+//             y: 3.3,
+//             x: -2,
+//         }
+//     },
+//     {
+//         geometry: [2.2, 20],
+//         position: {
+//             y: .7,
+//             x: 3.6,
+//         }
+//     },
+// ];
 
 
-function generateRandomCircles(count = 8) {
+function generateRandomCircles(count = 7) {
     const circlesArray = [];
+    console.log(random(6, count));
     for (let i = 0; i < count; i++) {
+        let radius = random(0, count / 2);
         circlesArray.push({
-            geometry: [random(1, 2.5), 20],
+            geometry: [radius, 20],
             position: {
-                y: random(-3, 3),
-                x: random(-3, 3),
+                y: random(-(count - radius), count - radius) * Math.cos(45 * (Math.PI/180)),
+                x: random(-(count - radius), count - radius) * Math.cos(45 * (Math.PI/180)),
             }
         })
     }
@@ -58,7 +60,7 @@ function generateRandomCircles(count = 8) {
 }
 
 function random(min, max) { // min and max included
-    return Math.random() * (max - min + 1) + min;
+    return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
 
@@ -82,7 +84,8 @@ function addCircles(circles) {
     })
 }
 
-addCircles(circles);
+addCircles();
+// addCircles(circles);
 
 const controls = new TrackballControls( basic.camera, basic.renderer.domElement );
 
@@ -120,7 +123,7 @@ function addLines(lines) {
 
 }
 
-addLines(lines);
+// addLines(lines);
 
 render();
 
