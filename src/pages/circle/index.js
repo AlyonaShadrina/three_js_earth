@@ -78,25 +78,41 @@ const mouseListener = (e, thisThree) => {
 
             const moveFormula = (1 / circleRadius) * moveCoef;
 
-            if ((mesh.position.x + moveFormula + circleRadius <= radius)
+            // console.log('mesh.position.x', mesh.position.x);
+            // console.log('Math.cos(45 * (Math.PI / 180))', Math.cos(45 * (Math.PI / 180)));
+            // console.log('**', mesh.position.x * Math.cos(45 * (Math.PI / 180)));
+            // console.log('----');
+
+            const top = (mesh.position.x ** 2 + mesh.position.y ** 2 + radius ** 2);
+            const bottom = ( 2 * mesh.position.x * mesh.position.y );
+
+            // console.log('top', top);
+            // console.log('bottom', bottom);
+
+            const angle = Math.cos((top / bottom) * (Math.PI / 180));
+            console.log('angle', angle);
+            if (
+                // ((mesh.position.x + moveFormula) + circleRadius <= radius * (mesh.position.y / circleRadius))
+                ((mesh.position.x + moveFormula) * Math.cos(angle * (Math.PI / 180)) + circleRadius <= radius )
                 && direction.x === 'right'
             ) {
-                mesh.position.x += moveFormula;
-            } else if ((mesh.position.x - moveFormula - circleRadius >= -radius)
-                && direction.x === 'left'
-            ) {
-                mesh.position.x -= moveFormula;
+                mesh.position.x += (moveFormula);
             }
-
-            if ((mesh.position.y + moveFormula + circleRadius <= radius)
-                && direction.y === 'top'
-            ) {
-                mesh.position.y += moveFormula;
-            } else if ((mesh.position.y - moveFormula - circleRadius >= -radius)
-                && direction.y === 'bottom'
-            ) {
-                mesh.position.y -= moveFormula;
-            }
+            // else if ((mesh.position.x - moveFormula - circleRadius >= -radius)
+            //     && direction.x === 'left'
+            // ) {
+            //     mesh.position.x -= moveFormula;
+            // }
+            //
+            // if ((mesh.position.y + moveFormula + circleRadius <= radius)
+            //     && direction.y === 'top'
+            // ) {
+            //     mesh.position.y += moveFormula;
+            // } else if ((mesh.position.y - moveFormula - circleRadius >= -radius)
+            //     && direction.y === 'bottom'
+            // ) {
+            //     mesh.position.y -= moveFormula;
+            // }
         }
 
     })
@@ -108,18 +124,18 @@ basic.addEventListener({
     listener: mouseListener,
 })
 
-const controls = new TrackballControls(basic.camera, basic.renderer.domElement);
-controls.rotateSpeed = 1.0;
-controls.zoomSpeed = 1.2;
-controls.panSpeed = 0.8;
-controls.keys = [65, 83, 68];
+// const controls = new TrackballControls(basic.camera, basic.renderer.domElement);
+// controls.rotateSpeed = 1.0;
+// controls.zoomSpeed = 1.2;
+// controls.panSpeed = 0.8;
+// controls.keys = [65, 83, 68];
 
 render();
 
 function render() {
     requestAnimationFrame(render);
     basic.update();
-    controls.update();
+    // controls.update();
 }
 
 
