@@ -32,59 +32,75 @@ basic.initRenderer()
     });
 
 // addLines(basic, 10, radius);
-addCircles(basic, 1, radius);
+addCircles(basic, 8, radius);
+
+const direction = {
+    x: null,
+    y: null,
+};
+let oldCoords = {
+    x: null,
+    y: null,
+}
 
 const mouseListener = (e, thisThree) => {
+
+    if (e.pageX < oldCoords.x) {
+        direction.x = "left"
+    } else if (e.pageX > oldCoords.x) {
+        direction.x = "right"
+    }
+
+    if (e.pageY < oldCoords.y) {
+        direction.y = "top"
+    } else if (e.pageY > oldCoords.y) {
+        direction.y = "bottom"
+    }
+
+    oldCoords = {
+        x: e.pageX,
+        y: e.pageY
+    };
+
+    const moveCoef = 0.05;
 
     const { domElement } = thisThree.renderer;
 
     const coordX = e.clientX - domElement.width / 2;
     const coordY = e.clientY - domElement.height / 2;
     const meshes = thisThree.meshes;
-    // console.log('thisThree', thisThree);
 
-    // console.log("meshes['ring']", meshes['ring']);
     Object.keys(meshes).map(meshName => {
 
         const { mesh } = meshes[meshName];
-
         if (mesh.position && meshName != 'ring') {
             const circleRadius = mesh.geometry.parameters.radius;
 
-            // const mousePosition = {};
+            const moveFormula = (1 / circleRadius) * moveCoef;
 
-            // mousePosition.x = ((e.clientX - thisThree.renderer.domElement.offsetLeft) / thisThree.renderer.domElement.offsetWidth) * 2 - 1;
-            // mousePosition.y = -((e.clientY - thisThree.renderer.domElement.offsetTop) / thisThree.renderer.domElement.offsetHeight) * 2 + 1;
-
-            // console.log('mousePosition', mousePosition);
-
-            const initPosition = { ...mesh.position };
-
-            console.log('coordX' ,coordX);
-
-            if (initPosition.x + coordX * (1 / circleRadius * 0.001) + circleRadius <= radius) {
-                mesh.position.x += coordX * (1 / circleRadius * 0.001);
+            if ((mesh.position.x + moveFormula + circleRadius <= radius)
+                && direction.x === 'right'
+            ) {
+                mesh.position.x += moveFormula;
+            } else if ((mesh.position.x - moveFormula - circleRadius >= -radius)
+                && direction.x === 'left'
+            ) {
+                mesh.position.x -= moveFormula;
             }
-            // if (initPosition.x + coordX * (1 / circleRadius * 0.001) + circleRadius <= radius) {
-            //     mesh.position.x += coordX * (1 / circleRadius * 0.001);
-            // }
 
-            // if (mesh.position.x + circleRadius <= radius) {
-            //     mesh.position.x += coordX * (1 / circleRadius * 0.001);
-            // } else {
-            //     mesh.position.x -= coordX * (1 / circleRadius * 0.001);
-            // }
-
-            // if (Math.abs(mesh.position.y) + circleRadius <= radius - (coordY * (1 / circleRadius * 0.001))) {
-            //     mesh.position.y += -coordY * (1 / circleRadius * 0.001);
-            // }
-
-
+            if ((mesh.position.y + moveFormula + circleRadius <= radius)
+                && direction.y === 'top'
+            ) {
+                mesh.position.y += moveFormula;
+            } else if ((mesh.position.y - moveFormula - circleRadius >= -radius)
+                && direction.y === 'bottom'
+            ) {
+                mesh.position.y -= moveFormula;
+            }
         }
 
     })
-    // thisThree.meshes['earth'].rotationStep.x = -coordY / 1000000;
-    // thisThree.meshes['earth'].rotationStep.y = -coordX / 1000000;
+
 };
 
 basic.addEventListener({
