@@ -18,31 +18,6 @@ basic.initRenderer()
          }
     })
 
-
-// const circles = [
-//     {
-//         geometry: [2.7, 20],
-//         position: {
-//             y: -.5,
-//         }
-//     },
-//     {
-//         geometry: [1.8, 20],
-//         position: {
-//             y: 3.3,
-//             x: -2,
-//         }
-//     },
-//     {
-//         geometry: [2.2, 20],
-//         position: {
-//             y: .7,
-//             x: 3.6,
-//         }
-//     },
-// ];
-
-
 function generateRandomCircles(count = 7) {
     const circlesArray = [];
     console.log(random(6, count));
@@ -97,7 +72,6 @@ function addCircles(circles) {
 }
 
 addCircles();
-// addCircles(circles);
 
 const controls = new TrackballControls( basic.camera, basic.renderer.domElement );
 
@@ -123,11 +97,16 @@ const lines = [
     ],
 ];
 
-function addLines(lines) {
+
+
+function addLines() {
     var material = new THREE.LineBasicMaterial( { color: 'grey' } );
 
+    const lines = generateRandomLines();
+    console.log('lines', lines);
     lines.map(line => {
         const geometry = new THREE.Geometry();
+        console.log('line', line);
         geometry.vertices.push(new THREE.Vector3(...line[0]));
         geometry.vertices.push(new THREE.Vector3(...line[1]));
         basic.scene.add(new THREE.Line( geometry, material ));
@@ -135,7 +114,27 @@ function addLines(lines) {
 
 }
 
-// addLines(lines);
+function generateRandomLines(count = 9, max = 7) {
+    const array = [];
+    for (let i = 0; i < count; i++) {
+        let radius = random(1, count / 2);
+        let x1 = random(-(max - radius), max - radius);
+        let y1 = random(-(max - radius), max - radius);
+        let x2 = random(-(max - radius), max - radius);
+        let y2 = random(-(max - radius), max - radius);
+
+
+        const line = [
+            [x1 * Math.cos(45 * (Math.PI/180)), y1 * Math.cos(45 * (Math.PI/180)), 1],
+            [x2 * Math.cos(45 * (Math.PI/180)), y2 * Math.cos(45 * (Math.PI/180)), 1]
+        ];
+        array.push(line)
+    }
+    return array;
+}
+
+
+addLines();
 
 render();
 
