@@ -1,140 +1,102 @@
 import * as THREE from 'three';
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls';
+import "../../navigation";
+import "../../style.css";
 
 import ThreeSceneBuilder from '../../ThreeSceneBuilder/ThreeSceneBuilder';
-import "../../style.css";
-import "../../navigation";
+import { addCircles } from './circles';
+import { addLines } from './lines';
 
+
+const radius = 7;
 
 const basic = new ThreeSceneBuilder();
 basic.initRenderer()
-    .initScene()
+    .initScene({
+        background: new THREE.Color('#e1d1c2'),
+    })
     .initCamera()
     .initLight()
     .createMesh({
-         geometry: {
-             type: 'Ring',
-             props: [7, 7, 30]
-         }
-    })
+        geometry: {
+            type: 'Ring',
+            props: [radius, radius + .5, radius * 15],
+        },
+        material: {
+            type: 'Basic',
+            props: {
+                color: '#1c2124',
+            },
+        },
+        name: 'ring'
+    });
 
-function generateRandomCircles(count = 7) {
-    const circlesArray = [];
-    console.log(random(6, count));
-    for (let i = 0; i < count; i++) {
-        let radius = random(1, count / 2);
-        let x = random(-(count - radius), count - radius);
-        let y = random(-(count - radius), count - radius);
-        let sin = x / radius;
-        // sin2(α) + cos2(α) = 1
-        // let сos = Math.sqrt(1 - sin ** 2);
-        // console.log('radius', radius);
-        // console.log('x', x);
-        // console.log('y', y);
-        // console.log('sin', sin);
-        // console.log('сos', сos);
-        circlesArray.push({
-            geometry: [radius, radius * 15],
-            position: {
-                // y: y * сos,
-                // x: x * сos,
-                y: y * Math.cos(45 * (Math.PI/180)),
-                x: x * Math.cos(45 * (Math.PI/180)),
+// addLines(basic, 10, radius);
+addCircles(basic, 1, radius);
+
+const mouseListener = (e, thisThree) => {
+
+    const { domElement } = thisThree.renderer;
+
+    const coordX = e.clientX - domElement.width / 2;
+    const coordY = e.clientY - domElement.height / 2;
+    const meshes = thisThree.meshes;
+    // console.log('thisThree', thisThree);
+
+    // console.log("meshes['ring']", meshes['ring']);
+    Object.keys(meshes).map(meshName => {
+
+        const { mesh } = meshes[meshName];
+
+        if (mesh.position && meshName != 'ring') {
+            const circleRadius = mesh.geometry.parameters.radius;
+
+            // const mousePosition = {};
+
+            // mousePosition.x = ((e.clientX - thisThree.renderer.domElement.offsetLeft) / thisThree.renderer.domElement.offsetWidth) * 2 - 1;
+            // mousePosition.y = -((e.clientY - thisThree.renderer.domElement.offsetTop) / thisThree.renderer.domElement.offsetHeight) * 2 + 1;
+
+            // console.log('mousePosition', mousePosition);
+
+            const initPosition = { ...mesh.position };
+
+            console.log('coordX' ,coordX);
+
+            if (initPosition.x + coordX * (1 / circleRadius * 0.001) + circleRadius <= radius) {
+                mesh.position.x += coordX * (1 / circleRadius * 0.001);
             }
-        })
-    }
-    return circlesArray;
-}
+            // if (initPosition.x + coordX * (1 / circleRadius * 0.001) + circleRadius <= radius) {
+            //     mesh.position.x += coordX * (1 / circleRadius * 0.001);
+            // }
 
-function random(min, max) { // min and max included
-    return Math.floor(Math.random() * (max - min + 1) + min);
-}
+            // if (mesh.position.x + circleRadius <= radius) {
+            //     mesh.position.x += coordX * (1 / circleRadius * 0.001);
+            // } else {
+            //     mesh.position.x -= coordX * (1 / circleRadius * 0.001);
+            // }
+
+            // if (Math.abs(mesh.position.y) + circleRadius <= radius - (coordY * (1 / circleRadius * 0.001))) {
+            //     mesh.position.y += -coordY * (1 / circleRadius * 0.001);
+            // }
 
 
-function addCircles(circles) {
-    generateRandomCircles().map(cirlce => {
-        basic.createMesh({
-            geometry: {
-                type: 'Circle',
-                props: cirlce.geometry
-            },
-            material: {
-                type: 'Basic',
-                props: {
-                    color: 'red',
-                    wireframe: true,
-                    ...cirlce.material
-                }
-            },
-            position: cirlce.position
-        })
+        }
+
     })
-}
+    // thisThree.meshes['earth'].rotationStep.x = -coordY / 1000000;
+    // thisThree.meshes['earth'].rotationStep.y = -coordX / 1000000;
+};
 
-addCircles();
+basic.addEventListener({
+    type: 'mousemove',
+    listener: mouseListener,
+})
 
-const controls = new TrackballControls( basic.camera, basic.renderer.domElement );
-
+const controls = new TrackballControls(basic.camera, basic.renderer.domElement);
 controls.rotateSpeed = 1.0;
 controls.zoomSpeed = 1.2;
 controls.panSpeed = 0.8;
-
-controls.keys = [ 65, 83, 68 ];
-
-
-const lines = [
-    [
-       [-3.6, -4.6, 0],
-       [3.6, 4.6, 0],
-    ],
-    [
-        [-4.6, -4, 0],
-        [-1, -4.5, 0],
-    ],
-    [
-        [-4.6, -4.5, 0],
-        [-1, -4, 0],
-    ],
-];
-
-
-
-function addLines() {
-    var material = new THREE.LineBasicMaterial( { color: 'grey' } );
-
-    const lines = generateRandomLines();
-    console.log('lines', lines);
-    lines.map(line => {
-        const geometry = new THREE.Geometry();
-        console.log('line', line);
-        geometry.vertices.push(new THREE.Vector3(...line[0]));
-        geometry.vertices.push(new THREE.Vector3(...line[1]));
-        basic.scene.add(new THREE.Line( geometry, material ));
-    })
-
-}
-
-function generateRandomLines(count = 9, max = 7) {
-    const array = [];
-    for (let i = 0; i < count; i++) {
-        let radius = random(1, count / 2);
-        let x1 = random(-(max - radius), max - radius);
-        let y1 = random(-(max - radius), max - radius);
-        let x2 = random(-(max - radius), max - radius);
-        let y2 = random(-(max - radius), max - radius);
-
-
-        const line = [
-            [x1 * Math.cos(45 * (Math.PI/180)), y1 * Math.cos(45 * (Math.PI/180)), 1],
-            [x2 * Math.cos(45 * (Math.PI/180)), y2 * Math.cos(45 * (Math.PI/180)), 1]
-        ];
-        array.push(line)
-    }
-    return array;
-}
-
-
-addLines();
+controls.keys = [65, 83, 68];
 
 render();
 
@@ -143,3 +105,5 @@ function render() {
     basic.update();
     controls.update();
 }
+
+
