@@ -23,7 +23,7 @@ basic.initRenderer()
             props: [radius, radius + .5, radius * 15],
         },
         material: {
-            type: 'Basic',
+            type: 'Lambert',
             props: {
                 color: '#1c2124',
             },
@@ -45,12 +45,80 @@ controls.zoomSpeed = 1.2;
 controls.panSpeed = 0.8;
 controls.keys = [65, 83, 68];
 
+var raycaster = new THREE.Raycaster();
+var mouse = new THREE.Vector2();
+
+let INTERSECTED;
+
 render();
 
+
+
+
+
+function onMouseMove( event ) {
+
+    event.preventDefault();
+    mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+    mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+    // find intersections
+    raycaster.setFromCamera( mouse, basic.camera );
+    var intersects = raycaster.intersectObjects( basic.scene.children );
+    if ( intersects.length > 0 ) {
+        if ( INTERSECTED != intersects[ 0 ].object ) {
+            if ( INTERSECTED && INTERSECTED.material.emissive) INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
+            INTERSECTED = intersects[ 0 ].object;
+            console.log('INTERSECTED', INTERSECTED.material.emissive);
+            INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
+            INTERSECTED.material.emissive.setHex( 0xff0000 );
+            console.log(intersects.length);
+        }
+    } else {
+        if ( INTERSECTED && INTERSECTED.material.emissive) INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
+        INTERSECTED = null;
+    }
+
+}
+
+window.addEventListener( 'mousemove', onMouseMove, false );
+
 function render() {
-    requestAnimationFrame(render);
-    basic.update();
+
+    raycaster.setFromCamera( mouse, basic.camera );
+
+    // calculate objects intersecting the picking ray
+
+
     controls.update();
+
+    var intersects = raycaster.intersectObjects( basic.scene.children );
+
+    console.log('intersects', intersects);
+
+    // for ( var i = 0; i < intersects.length; i++ ) {
+    //
+    //     intersects[ i ].object.material.color.set( 0xff0000 );
+    //
+    // }
+    //
+    // if ( intersects.length > 0 ) {
+    //     if ( INTERSECTED != intersects[ 0 ].object ) {
+    //         if ( INTERSECTED ) INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
+    //         INTERSECTED = intersects[ 0 ].object;
+    //         INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
+    //         INTERSECTED.material.emissive.setHex( 0xff0000 );
+    //         console.log(intersects.length);
+    //     }
+    // } else {
+    //     if ( INTERSECTED ) INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
+    //     INTERSECTED = null;
+    // }
+
+    requestAnimationFrame(render);
+
+    basic.update();
+
+
 }
 
 

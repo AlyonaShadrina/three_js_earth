@@ -42,7 +42,7 @@ export function addCircles(scene, count, maxRadius) {
                 props: cirlce.geometry,
             },
             material: {
-                type: 'Basic',
+                type: 'Lambert',
                 props: {
                     color: 'red',
                     ...cirlce.material,
