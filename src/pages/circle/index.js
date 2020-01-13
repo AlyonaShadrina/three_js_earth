@@ -47,12 +47,24 @@ function generateRandomCircles(count = 7) {
     const circlesArray = [];
     console.log(random(6, count));
     for (let i = 0; i < count; i++) {
-        let radius = random(0, count / 2);
+        let radius = random(1, count / 2);
+        let x = random(-(count - radius), count - radius);
+        let y = random(-(count - radius), count - radius);
+        let sin = x / radius;
+        // sin2(α) + cos2(α) = 1
+        // let сos = Math.sqrt(1 - sin ** 2);
+        // console.log('radius', radius);
+        // console.log('x', x);
+        // console.log('y', y);
+        // console.log('sin', sin);
+        // console.log('сos', сos);
         circlesArray.push({
-            geometry: [radius, 20],
+            geometry: [radius, radius * 15],
             position: {
-                y: random(-(count - radius), count - radius) * Math.cos(45 * (Math.PI/180)),
-                x: random(-(count - radius), count - radius) * Math.cos(45 * (Math.PI/180)),
+                // y: y * сos,
+                // x: x * сos,
+                y: y * Math.cos(45 * (Math.PI/180)),
+                x: x * Math.cos(45 * (Math.PI/180)),
             }
         })
     }
