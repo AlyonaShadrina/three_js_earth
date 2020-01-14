@@ -32,7 +32,7 @@ basic.initRenderer()
     });
 
 // addLines(basic, 10, radius);
-addCircles(basic, 8, radius);
+addCircles(basic, 3, radius);
 
 const direction = {
     x: null,
@@ -62,7 +62,7 @@ const mouseListener = (e, thisThree) => {
         y: e.pageY
     };
 
-    const moveCoef = 0.05;
+    const moveCoef = 0.1;
 
     const { domElement } = thisThree.renderer;
 
@@ -78,26 +78,46 @@ const mouseListener = (e, thisThree) => {
 
             const moveFormula = (1 / circleRadius) * moveCoef;
 
+
+            // //
+            // // console.log('top', top);
+            // // console.log('bottom', bottom);
+            // //
+
+            // console.log('radius', radius * Math.sin(angle) - circleRadius);
+
             // console.log('mesh.position.x', mesh.position.x);
-            // console.log('Math.cos(45 * (Math.PI / 180))', Math.cos(45 * (Math.PI / 180)));
-            // console.log('**', mesh.position.x * Math.cos(45 * (Math.PI / 180)));
-            // console.log('----');
+            // console.log('mesh.position.y ', mesh.position.y);
 
-            const top = (mesh.position.x ** 2 + mesh.position.y ** 2 + radius ** 2);
-            const bottom = ( 2 * mesh.position.x * mesh.position.y );
 
-            // console.log('top', top);
-            // console.log('bottom', bottom);
+            const top = (mesh.position.x ** 2 + mesh.position.x ** 2 + mesh.position.y ** 2 - mesh.position.y ** 2);
+            // const top = ((mesh.position.x * 2)** 2);
+            const bottom = ( 2 * (mesh.position.x) * Math.sqrt(mesh.position.x ** 2 + mesh.position.y ** 2) );
+            const angle = Math.acos((top / bottom));
 
-            const angle = Math.cos((top / bottom) * (Math.PI / 180));
-            console.log('angle', angle);
+            const rad = 45 * (Math.PI / 180);
+
+            // console.log('angle', angle, rad);
+            // console.log('Math.cos(angle)', Math.cos(angle));
+
             if (
-                // ((mesh.position.x + moveFormula) + circleRadius <= radius * (mesh.position.y / circleRadius))
-                ((mesh.position.x + moveFormula) * Math.cos(angle * (Math.PI / 180)) + circleRadius <= radius )
+                mesh.position.x > 0
+                && ((mesh.position.x + moveFormula) + circleRadius <= radius * Math.cos(angle))
                 && direction.x === 'right'
             ) {
+
+                // console.log('angle', angle, rad);
+                console.log('Math.cos(angle)', Math.cos(angle));
+
+
                 mesh.position.x += (moveFormula);
             }
+            // else {
+            //
+            //     console.log('mesh.position.x + moveFormula', mesh.position.x + moveFormula);
+            //     console.log('radius', Math.abs(angle) * radius);
+            //     console.log('-------------');
+            // }
             // else if ((mesh.position.x - moveFormula - circleRadius >= -radius)
             //     && direction.x === 'left'
             // ) {
@@ -139,3 +159,8 @@ function render() {
 }
 
 
+function radToDeg(radians)
+{
+    var pi = Math.PI;
+    return radians * (180/pi);
+}

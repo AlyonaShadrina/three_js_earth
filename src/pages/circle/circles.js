@@ -21,7 +21,7 @@ const generateRandomCircles = (count = 7, maxRadius = 7) => {
             position: {
                 // y: y * сos,
                 // x: x * сos,
-                y: y * Math.cos(45 * (Math.PI / 180)),
+                y: y * Math.sin(45 * (Math.PI / 180)),
                 x: x * Math.cos(45 * (Math.PI / 180)),
             },
             material: {
