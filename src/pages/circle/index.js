@@ -32,7 +32,7 @@ basic.initRenderer()
     });
 
 // addLines(basic, 10, radius);
-addCircles(basic, 3, radius);
+addCircles(basic, 8, radius);
 
 const direction = {
     x: null,
@@ -90,34 +90,39 @@ const mouseListener = (e, thisThree) => {
             // console.log('mesh.position.y ', mesh.position.y);
 
 
-            const top = (mesh.position.x ** 2 + mesh.position.x ** 2 + mesh.position.y ** 2 - mesh.position.y ** 2);
+            const top = (mesh.position.x ** 2 + mesh.position.x ** 2 + mesh.position.y ** 2 - mesh.position.y ** 2) || .1;
             // const top = ((mesh.position.x * 2)** 2);
-            const bottom = ( 2 * (mesh.position.x) * Math.sqrt(mesh.position.x ** 2 + mesh.position.y ** 2) );
+            const bottom = ( 2 * (mesh.position.x || .1) * Math.sqrt((mesh.position.x || .1) ** 2 + mesh.position.y ** 2) );
             const angle = Math.acos((top / bottom));
 
-            const rad = 45 * (Math.PI / 180);
 
             // console.log('angle', angle, rad);
             // console.log('Math.cos(angle)', Math.cos(angle));
 
             if (
-                mesh.position.x > 0
-                && ((mesh.position.x + moveFormula) + circleRadius <= radius * Math.cos(angle))
+                // mesh.position.x > 0 &&
+                ((mesh.position.x + moveFormula) <= radius * Math.abs(Math.cos(angle)))
                 && direction.x === 'right'
             ) {
 
-                // console.log('angle', angle, rad);
-                console.log('Math.cos(angle)', Math.cos(angle));
+                console.log('angle', Math.cos(angle));
 
 
                 mesh.position.x += (moveFormula);
             }
-            // else {
-            //
+            else {
+                console.log(':(((((------');
+
+                console.log('meshName', meshName, circleRadius);
+                console.log('top', top);
+                console.log('bottom', bottom);
+                console.log('Math.cos(angle)', Math.cos(angle));
+
+                //
             //     console.log('mesh.position.x + moveFormula', mesh.position.x + moveFormula);
             //     console.log('radius', Math.abs(angle) * radius);
-            //     console.log('-------------');
-            // }
+                console.log('------))))):');
+            }
             // else if ((mesh.position.x - moveFormula - circleRadius >= -radius)
             //     && direction.x === 'left'
             // ) {
