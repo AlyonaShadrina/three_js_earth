@@ -6,8 +6,11 @@ const generateRandomCircles = (count = 7, maxRadius = 7) => {
     const circlesArray = [];
     for (let i = 0; i < count; i++) {
         let radius = random(1, maxRadius / 2);
+        // let x = -(maxRadius - radius); // temp for debug
         let x = random(-(maxRadius - radius), maxRadius - radius);
+        // let y = random(-1, 1); // that solves issue on moving
         let y = random(-(maxRadius - radius), maxRadius - radius);
+        // console.log('-(maxRadius - radius)', -(maxRadius - radius));
         let sin = x / radius;
         // sin2(α) + cos2(α) = 1
         // let сos = Math.sqrt(1 - sin ** 2);
@@ -21,7 +24,7 @@ const generateRandomCircles = (count = 7, maxRadius = 7) => {
             position: {
                 // y: y * сos,
                 // x: x * сos,
-                y: y * Math.sin(45 * (Math.PI / 180)),
+                y: y * Math.cos(45 * (Math.PI / 180)),
                 x: x * Math.cos(45 * (Math.PI / 180)),
             },
             material: {

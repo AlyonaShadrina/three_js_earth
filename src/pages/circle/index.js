@@ -32,7 +32,7 @@ basic.initRenderer()
     });
 
 // addLines(basic, 10, radius);
-addCircles(basic, 8, radius);
+addCircles(basic, 12, radius);
 
 const direction = {
     x: null,
@@ -62,7 +62,7 @@ const mouseListener = (e, thisThree) => {
         y: e.pageY
     };
 
-    const moveCoef = 0.1;
+    const moveCoef = .05;
 
     const { domElement } = thisThree.renderer;
 
@@ -76,7 +76,7 @@ const mouseListener = (e, thisThree) => {
         if (mesh.position && meshName != 'ring') {
             const circleRadius = mesh.geometry.parameters.radius;
 
-            const moveFormula = (1 / circleRadius) * moveCoef;
+            const moveFormula = (moveCoef / (circleRadius / 3));
 
 
             // //
@@ -90,44 +90,60 @@ const mouseListener = (e, thisThree) => {
             // console.log('mesh.position.y ', mesh.position.y);
 
 
-            const top = (mesh.position.x ** 2 + mesh.position.x ** 2 + mesh.position.y ** 2 - mesh.position.y ** 2) || .1;
+            const tempY = mesh.position.y / radius;
+
+
+            const top = (mesh.position.x ** 2 + mesh.position.x ** 2 + mesh.position.y ** 2 - mesh.position.y ** 2);
+            // const top = (mesh.position.x ** 2 + mesh.position.x ** 2 + tempY ** 2 - tempY ** 2);
             // const top = ((mesh.position.x * 2)** 2);
-            const bottom = ( 2 * (mesh.position.x || .1) * Math.sqrt((mesh.position.x || .1) ** 2 + mesh.position.y ** 2) );
+            const bottom = ( 2 * mesh.position.x * Math.sqrt(mesh.position.x ** 2 + mesh.position.y ** 2) );
+            // const bottom = ( 2 * mesh.position.x * Math.sqrt(mesh.position.x ** 2 + tempY ** 2) );
             const angle = Math.acos((top / bottom));
+            // const angle = Math.acos((top / bottom));
 
 
             // console.log('angle', angle, rad);
-            // console.log('Math.cos(angle)', Math.cos(angle));
+
 
             if (
-                // mesh.position.x > 0 &&
-                ((mesh.position.x + moveFormula) <= radius * Math.abs(Math.cos(angle)))
+                // mesh.position.x >= 0 &&
+                // ((mesh.position.x + moveFormula) <= radius * Math.cos(angle || 0))
+                ((mesh.position.x + moveFormula) <= radius * Math.abs(Math.cos(angle || 0)))
                 && direction.x === 'right'
             ) {
-
-                console.log('angle', Math.cos(angle));
-
-
-                mesh.position.x += (moveFormula);
-            }
-            else {
-                console.log(':(((((------');
-
-                console.log('meshName', meshName, circleRadius);
+                //
+                console.log(`%cmeshName ${meshName}`, 'font-size: 16px;');
+                console.log('mesh.position.x', mesh.position.x);
+                console.log('mesh.position.y', mesh.position.y);
                 console.log('top', top);
                 console.log('bottom', bottom);
                 console.log('Math.cos(angle)', Math.cos(angle));
 
-                //
-            //     console.log('mesh.position.x + moveFormula', mesh.position.x + moveFormula);
-            //     console.log('radius', Math.abs(angle) * radius);
-                console.log('------))))):');
+
+                mesh.position.x += (moveFormula);
             }
-            // else if ((mesh.position.x - moveFormula - circleRadius >= -radius)
+            // else if (
+            //     mesh.position.x < 0 &&
+            //     ((mesh.position.x + moveFormula) <= radius * Math.sin(angle || 0))
+            // //     ((mesh.position.x + moveFormula) <= radius * Math.abs(Math.sin(angle || 0)))
+            //     && direction.x === 'right'
+            // ) {
+            //     mesh.position.x += moveFormula;
+            // }
+            // else if (
+            //     (mesh.position.x - moveFormula >= -(radius * Math.abs(Math.cos(angle))))
             //     && direction.x === 'left'
             // ) {
             //     mesh.position.x -= moveFormula;
             // }
+            else if (direction.x === 'right') {
+                console.log(`%cmeshName ${meshName}`, 'font-size: 16px; color: red;');
+                console.log('mesh.position.x', mesh.position.x);
+                console.log('mesh.position.y', mesh.position.y);
+                console.log('top', top);
+                console.log('bottom', bottom);
+                console.log('-----------radius * Math.abs(Math.cos(angle))', Math.cos(angle));
+            }
             //
             // if ((mesh.position.y + moveFormula + circleRadius <= radius)
             //     && direction.y === 'top'
