@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 import ThreeSceneBuilder from '../../ThreeSceneBuilder/ThreeSceneBuilder';
@@ -24,23 +25,27 @@ gridB.initRenderer({
              60,
              window.innerWidth / window.innerHeight,
              1,
-             1000
+             3000
          ]
      },
      position: {
-         y: 10,
-         z: 650,
+         y: 320,
+         z: 1050,
+     },
+     rotation: {
+         x: -.3,
+         // y: 1090,
      }
     })
     .initLight();
 
 console.log('gridB', gridB);
 
-gridB.camera.lookAt(gridB.scene.position);
+// gridB.camera.lookAt(gridB.scene.position);
 
-const division = 600;
-const limit = 4000;
-const grid = new THREE.GridHelper(limit * 2, division, "blue", "blue");
+const division = 50;
+const limit = 2000;
+const grid = new THREE.GridHelper(limit * 4, division, "blue", "blue");
 
 const moveable = [];
 for (let i = 0; i <= division; i++) {
@@ -104,22 +109,34 @@ let time = 0;
 
 var loader = new GLTFLoader();
 
-loader.load( car, function ( gltf ) {
+loader.load(car, function (gltf) {
+    console.log('gltf.scene', gltf.scene);
+    gltf.scene.position.y = 120;
+    gltf.scene.rotation.y = Math.PI;
+    gltf.scene.position.z = 320;
+    gridB.scene.add(gltf.scene);
+    renderB();
 
-    gridB.scene.add( gltf.scene );
-
-}, undefined, function ( error ) {
-
+}, undefined, function (error) {
     console.error( error );
+});
 
-} );
 
 
-renderB();
+const controls = new TrackballControls(gridB.camera, gridB.renderer.domElement);
+// controls.rotateSpeed = 1.0;
+// controls.zoomSpeed = 1.2;
+// controls.panSpeed = 0.8;
+// controls.keys = [65, 83, 68];
+
+
 
 function renderB() {
     requestAnimationFrame(renderB);
-    time += clock.getDelta();
+    // time += clock.getDelta();
+    time += .3;
     grid.material.uniforms.time.value = time;
     gridB.update();
+    // controls.update();
+
 }
