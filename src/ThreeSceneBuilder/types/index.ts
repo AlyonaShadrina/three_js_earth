@@ -28,8 +28,10 @@ export type Light = Object3D & {
     light?: DirectionalLight | AmbientLight | HemisphereLight | PointLight | SpotLight | RectAreaLight,
 }
 
+type Line = Object3D & { type: 'Line', props: any[]};
+
 export type Mesh = Object3D & {
-    geometry?: SphereGeometry | BoxGeometry,
+    geometry?: SphereGeometry | BoxGeometry | Line,
     material?: BasicMaterial | PhongMaterial,
     name?: string | number,
 }

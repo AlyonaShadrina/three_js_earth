@@ -13,6 +13,7 @@ export default class ThreeSceneBuilder {
     camera: THREE.Camera;
     light: THREE.Light;
     meshes: MeshesObject = {};
+    lines: any = {};
     composer: any;
 
 
@@ -125,7 +126,44 @@ export default class ThreeSceneBuilder {
         return this;
     }
 
+    createLine({
+                   geometry = new THREE.Geometry(),
+                   // material = {
+                   //     type: 'Basic',
+                   //     props: {
+                   //         color: 'lightblue',
+                   //         wireframe: true,
+                   //     },
+                   // },
+                   rotation = {},
+                   // rotationStep = {},
+                   name = i,
+        position = {},
+               }) {
+        if (!this.scene) {
+            console.error('You have to .Scene() before .createLine()')
+        }
 
+        const ThreeGeometry = geometry;
+        const ThreeMaterial = new THREE.LineBasicMaterial( { color: 0x787878, opacity: .2, linewidth: .1 } );
+        const line = new THREE.Line(ThreeGeometry, ThreeMaterial);
+        this.lines[name] = {
+            line,
+            // rotationStep,
+        };
+
+        Object.keys(position).map(axis => {
+            line.position[axis] = position[axis];
+        });
+
+        Object.keys(rotation).map(axis => {
+            line.rotation[axis] = rotation[axis];
+        });
+
+        this.scene.add(line);
+        i++;
+        return this;
+    }
 
     addEventListener({
         type,

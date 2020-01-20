@@ -39,7 +39,7 @@ gridB.initRenderer({
      },
      rotation: {
          x: -.1,
-         // y: 1090,
+         // y: Math.PI / 2,
      }
     })
     .initLight({
@@ -62,7 +62,7 @@ gridB.initRenderer({
 
 const division = 50;
 const limit = 2000;
-const grid = new THREE.GridHelper(limit * 4, division, "pink", "pink");
+const grid = new THREE.GridHelper(limit * 4, division, "purple", "purple");
 
 const moveable = [];
 for (let i = 0; i <= division; i++) {
@@ -116,7 +116,7 @@ grid.material = new THREE.ShaderMaterial({
     vertexColors: THREE.VertexColors,
 });
 
-gridB.scene.add(grid);
+// gridB.scene.add(grid);
 
 const clock = new THREE.Clock();
 let time = 0;
@@ -131,14 +131,14 @@ loader.load(car, function (gltf) {
     gltf.scene.position.y = 120;
     gltf.scene.rotation.y = Math.PI;
     gltf.scene.position.z = 320;
-    gridB.scene.add(gltf.scene);
+    // gridB.scene.add(gltf.scene);
     renderB();
     console.log('gltf.scene', gltf.scene);
 
     // const light = new THREE.AmbientLight(0xFFFFFF, 1);
-    const light = new THREE.DirectionalLight(0xFFFFFF, 1);
-    light.position.z = -1000;
-    light.position.y = 1000;
+    // const light = new THREE.DirectionalLight(0xFFFFFF, 1);
+    // light.position.z = -1000;
+    // light.position.y = 1000;
 
 
     // gltf.scene.add(light);
@@ -160,19 +160,58 @@ var renderScene = new RenderPass( gridB.scene, gridB.camera );
 
 var bloomPass = new UnrealBloomPass(
     new THREE.Vector2( window.innerWidth, window.innerHeight ),
+        3,
     .3,
-    0.01,
-    0
+    .2
 );
-bloomPass.threshold = .2;
-bloomPass.strength = 2.7;
-bloomPass.radius = .1;
+// bloomPass.threshold = .4;
+// bloomPass.strength = 2.7;
+// bloomPass.radius = .1;
 
-gridB.renderer.toneMappingExposure = Math.pow( 1, 5 );
+
+gridB.renderer.toneMappingExposure = Math.pow( 1, 40);
 
 const composer = new EffectComposer( gridB.renderer );
-composer.addPass( renderScene );
+// composer.addPass( renderScene );
 // composer.addPass( bloomPass );
+
+
+var geometry = new THREE.Geometry();
+geometry.vertices.push(new THREE.Vector3( - 500, 0, 0 ) );
+geometry.vertices.push(new THREE.Vector3( 500, 0, 0 ) );
+
+const linesMaterial = new THREE.LineBasicMaterial( { color: 0x787878, opacity: .2, linewidth: .1 } );
+
+for ( var i = 0; i <= 20; i ++ ) {
+
+    // var line = new THREE.Line( geometry, linesMaterial );
+    // line.position.z = ( i * 50 ) - 500;
+    // gridB.scene.add( line );
+    //
+    // var line = new THREE.Line( geometry, linesMaterial );
+    // line.position.x = ( i * 50 ) - 500;
+    // line.rotation.y = 90 * Math.PI / 180;
+    // gridB.scene.add( line );
+
+    gridB.createLine({
+        name: `linex-${i}`,
+        geometry,
+        position: {
+            z: ( i * 50 ) - 500,
+        }
+    })
+
+    gridB.createLine({
+        name: `liney-${i}`,
+        geometry,
+        position: {
+            x: ( i * 50 ) - 500,
+        },
+        rotation: {
+            y: 90 * Math.PI / 180
+        }
+    })
+}
 
 
 
@@ -181,8 +220,14 @@ function renderB() {
     // time += clock.getDelta();
     time += .3;
     grid.material.uniforms.time.value = time;
+
+    Object.keys(gridB.lines).map(name => {
+        console.log();
+        gridB.lines[name].line.position.z += 1
+    })
+
+
     gridB.update();
     controls.update();
     composer.render();
-
 }
