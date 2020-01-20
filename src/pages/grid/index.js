@@ -1,6 +1,9 @@
 import * as THREE from 'three';
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 
 import ThreeSceneBuilder from '../../ThreeSceneBuilder/ThreeSceneBuilder';
 import "../../style.css";
@@ -17,7 +20,9 @@ const gridB = new ThreeSceneBuilder();
 gridB.initRenderer({
         props: {antialias: true}
     })
-    .initScene()
+    .initScene({
+        background: new THREE.Color('#222')
+    })
     .initCamera({
      camera: {
          type: 'Perspective',
@@ -33,19 +38,31 @@ gridB.initRenderer({
          z: 1050,
      },
      rotation: {
-         x: -.3,
+         x: -.1,
          // y: 1090,
      }
     })
-    .initLight();
+    .initLight({
+        light: {
+            type: 'Directional',
+            props: [0xFFFFFF, 6],
+        },
+        position: {
+            y: 700,
+            z: -350,
+        },
+        // rotation: {
+        //     // x: Math.PI / 4,
+        // },
+    });
 
-console.log('gridB', gridB);
+// console.log('gridB', gridB);
 
-// gridB.camera.lookAt(gridB.scene.position);
+// gridB.light.lookAt(gridB.scene.position);
 
 const division = 50;
 const limit = 2000;
-const grid = new THREE.GridHelper(limit * 4, division, "blue", "blue");
+const grid = new THREE.GridHelper(limit * 4, division, "pink", "pink");
 
 const moveable = [];
 for (let i = 0; i <= division; i++) {
@@ -110,12 +127,21 @@ let time = 0;
 var loader = new GLTFLoader();
 
 loader.load(car, function (gltf) {
-    console.log('gltf.scene', gltf.scene);
+    // console.log('gltf.scene', gltf.scene);
     gltf.scene.position.y = 120;
     gltf.scene.rotation.y = Math.PI;
     gltf.scene.position.z = 320;
     gridB.scene.add(gltf.scene);
     renderB();
+    console.log('gltf.scene', gltf.scene);
+
+    // const light = new THREE.AmbientLight(0xFFFFFF, 1);
+    const light = new THREE.DirectionalLight(0xFFFFFF, 1);
+    light.position.z = -1000;
+    light.position.y = 1000;
+
+
+    // gltf.scene.add(light);
 
 }, undefined, function (error) {
     console.error( error );
@@ -124,10 +150,29 @@ loader.load(car, function (gltf) {
 
 
 const controls = new TrackballControls(gridB.camera, gridB.renderer.domElement);
-// controls.rotateSpeed = 1.0;
-// controls.zoomSpeed = 1.2;
-// controls.panSpeed = 0.8;
-// controls.keys = [65, 83, 68];
+controls.rotateSpeed = 1.0;
+controls.zoomSpeed = 1.2;
+controls.panSpeed = 0.8;
+controls.keys = [65, 83, 68];
+
+
+var renderScene = new RenderPass( gridB.scene, gridB.camera );
+
+var bloomPass = new UnrealBloomPass(
+    new THREE.Vector2( window.innerWidth, window.innerHeight ),
+    .3,
+    0.01,
+    0
+);
+bloomPass.threshold = .2;
+bloomPass.strength = 2.7;
+bloomPass.radius = .1;
+
+gridB.renderer.toneMappingExposure = Math.pow( 1, 5 );
+
+const composer = new EffectComposer( gridB.renderer );
+composer.addPass( renderScene );
+// composer.addPass( bloomPass );
 
 
 
@@ -137,6 +182,7 @@ function renderB() {
     time += .3;
     grid.material.uniforms.time.value = time;
     gridB.update();
-    // controls.update();
+    controls.update();
+    composer.render();
 
 }
