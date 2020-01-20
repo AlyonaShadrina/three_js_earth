@@ -160,8 +160,8 @@ var renderScene = new RenderPass( gridB.scene, gridB.camera );
 
 var bloomPass = new UnrealBloomPass(
     new THREE.Vector2( window.innerWidth, window.innerHeight ),
-        3,
-    .3,
+        2.3,
+    .2,
     .2
 );
 // bloomPass.threshold = .4;
@@ -169,11 +169,11 @@ var bloomPass = new UnrealBloomPass(
 // bloomPass.radius = .1;
 
 
-gridB.renderer.toneMappingExposure = Math.pow( 1, 40);
+// gridB.renderer.toneMappingExposure = Math.pow( 1, 4);
 
 const composer = new EffectComposer( gridB.renderer );
-// composer.addPass( renderScene );
-// composer.addPass( bloomPass );
+composer.addPass( renderScene );
+composer.addPass( bloomPass );
 
 
 var geometry = new THREE.Geometry();
@@ -221,10 +221,9 @@ function renderB() {
     time += .3;
     grid.material.uniforms.time.value = time;
 
-    Object.keys(gridB.lines).map(name => {
-        console.log();
-        gridB.lines[name].line.position.z += 1
-    })
+    // Object.keys(gridB.lines).map(name => {
+    //     gridB.lines[name].line.position.z += 1
+    // })
 
 
     gridB.update();
