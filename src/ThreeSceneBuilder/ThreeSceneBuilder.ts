@@ -147,6 +147,7 @@ export default class ThreeSceneBuilder {
         const ThreeGeometry = geometry;
         const ThreeMaterial = new THREE.LineBasicMaterial( { color: 0x787878, opacity: .2, linewidth: .1 } );
         const line = new THREE.Line(ThreeGeometry, ThreeMaterial);
+        line.name = name.toString();
         this.lines[name] = {
             line,
             // rotationStep,

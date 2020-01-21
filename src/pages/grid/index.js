@@ -131,7 +131,7 @@ loader.load(car, function (gltf) {
     gltf.scene.position.y = 120;
     gltf.scene.rotation.y = Math.PI;
     gltf.scene.position.z = 320;
-    // gridB.scene.add(gltf.scene);
+    gridB.scene.add(gltf.scene);
     renderB();
     console.log('gltf.scene', gltf.scene);
 
@@ -149,11 +149,11 @@ loader.load(car, function (gltf) {
 
 
 
-const controls = new TrackballControls(gridB.camera, gridB.renderer.domElement);
-controls.rotateSpeed = 1.0;
-controls.zoomSpeed = 1.2;
-controls.panSpeed = 0.8;
-controls.keys = [65, 83, 68];
+// const controls = new TrackballControls(gridB.camera, gridB.renderer.domElement);
+// controls.rotateSpeed = 1.0;
+// controls.zoomSpeed = 1.2;
+// controls.panSpeed = 0.8;
+// controls.keys = [65, 83, 68];
 
 
 var renderScene = new RenderPass( gridB.scene, gridB.camera );
@@ -176,20 +176,24 @@ composer.addPass( renderScene );
 composer.addPass( bloomPass );
 
 
+const size = 500;
+const count = 20;
+const cell = 50;
+
 var geometry = new THREE.Geometry();
-geometry.vertices.push(new THREE.Vector3( - 500, 0, 0 ) );
-geometry.vertices.push(new THREE.Vector3( 500, 0, 0 ) );
+geometry.vertices.push(new THREE.Vector3( - size, 0, 0 ) );
+geometry.vertices.push(new THREE.Vector3( size, 0, 0 ) );
 
-const linesMaterial = new THREE.LineBasicMaterial( { color: 0x787878, opacity: .2, linewidth: .1 } );
+const linesMaterial = new THREE.LineBasicMaterial( { color: 0x787878, opacity: .2, linewidth: .2 } );
 
-for ( var i = 0; i <= 20; i ++ ) {
+for ( var i = 0; i <= count; i++ ) {
 
     // var line = new THREE.Line( geometry, linesMaterial );
-    // line.position.z = ( i * 50 ) - 500;
+    // line.position.z = ( i * 50 ) - size;
     // gridB.scene.add( line );
     //
     // var line = new THREE.Line( geometry, linesMaterial );
-    // line.position.x = ( i * 50 ) - 500;
+    // line.position.x = ( i * 50 ) - size;
     // line.rotation.y = 90 * Math.PI / 180;
     // gridB.scene.add( line );
 
@@ -197,7 +201,7 @@ for ( var i = 0; i <= 20; i ++ ) {
         name: `linex-${i}`,
         geometry,
         position: {
-            z: ( i * 50 ) - 500,
+            z: ( i * cell ) - size,
         }
     })
 
@@ -205,7 +209,7 @@ for ( var i = 0; i <= 20; i ++ ) {
         name: `liney-${i}`,
         geometry,
         position: {
-            x: ( i * 50 ) - 500,
+            x: ( i * cell ) - size,
         },
         rotation: {
             y: 90 * Math.PI / 180
@@ -221,12 +225,28 @@ function renderB() {
     time += .3;
     grid.material.uniforms.time.value = time;
 
-    // Object.keys(gridB.lines).map(name => {
-    //     gridB.lines[name].line.position.z += 1
-    // })
+    Object.keys(gridB.lines).map(name => {
+        if (name.includes('x')) {
+            if (gridB.lines[name].line.position.z < size) {
+                gridB.lines[name].line.position.z += 1
+            } else {
+                delete gridB.lines[name]
+                const selectedObject = gridB.scene.getObjectByName(name);
+                gridB.scene.remove(selectedObject);
+                gridB.createLine({
+                    name: `linex-${Date.now()}`,
+                    geometry,
+                    position: {
+                        z: ( 0 * cell ) - size,
+                    }
+                })
+            }
+        }
+    });
 
+    console.log('gridB.scene', gridB.scene);
 
     gridB.update();
-    controls.update();
+    // controls.update();
     composer.render();
 }
