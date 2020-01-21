@@ -70,7 +70,7 @@ const earthPlanet = new ThreeSceneBuilder()
     .createMesh({
         geometry: {
             type: 'Plane',
-            props: [200, 200, 4],
+            props: [300, 300, 4],
         },
         material: {
             type: 'Basic',
@@ -80,7 +80,7 @@ const earthPlanet = new ThreeSceneBuilder()
             }
         },
         position: {
-            z: -100,
+            z: -60,
             y: 100,
         },
         name: 'plane'
@@ -102,4 +102,14 @@ function render() {
     requestAnimationFrame(render);
     earthPlanet.update();
     // controls.update();
+}
+
+window.addEventListener( 'resize', onWindowResize, false );
+
+function onWindowResize() {
+
+    earthPlanet.camera.aspect = window.innerWidth / window.innerHeight;
+    earthPlanet.camera.updateProjectionMatrix();
+    earthPlanet.renderer.setSize( window.innerWidth, window.innerHeight );
+
 }
