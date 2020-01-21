@@ -1,4 +1,6 @@
 import { TextureLoader, CubeTextureLoader } from 'three';
+import { FilmPass } from 'three/examples/jsm/postprocessing/FilmPass';
+
 import "../../style.css";
 import "../../style-dark.css";
 import "../../navigation";
@@ -10,7 +12,6 @@ import nz from '../../assets/dark-s_nz.jpg';
 import px from '../../assets/dark-s_px.jpg';
 import py from '../../assets/dark-s_py.jpg';
 import pz from '../../assets/dark-s_pz.jpg';
-import { FilmPass } from '../../postprocessing/FilmPass';
 import ThreeSceneBuilder from '../../ThreeSceneBuilder/ThreeSceneBuilder';
 
 
