@@ -1,24 +1,22 @@
 import * as THREE from 'three';
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
+import "../../navigation";
+import "../../style.css";
 
 import ThreeSceneBuilder from '../../ThreeSceneBuilder/ThreeSceneBuilder';
-import "../../style.css";
-import "../../navigation";
-import car from '../../assets/tesla_cybertruck/out.glb';
+import { addCar } from './car';
 import { addLine, createGrid } from './grid';
-
-
 
 // car by https://sketchfab.com/3d-models/tesla-cybertruck-ee93bd3b43344a34bee3ae0f2edf53ce
 // converted to glb with http://glb-packer.glitch.me/
 
 const gridB = new ThreeSceneBuilder();
 
-gridB.initRenderer({
+gridB
+    .initRenderer({
         props: {antialias: true}
     })
     .initScene({
@@ -54,23 +52,9 @@ gridB.initRenderer({
     });
 
 
-const clock = new THREE.Clock();
-let time = 0;
 
-//      .initLight()
-//      .createMesh();
+addCar({ builder: gridB, onload: renderB });
 
-var loader = new GLTFLoader();
-
-loader.load(car, function (gltf) {
-    gltf.scene.position.y = 120;
-    gltf.scene.rotation.y = Math.PI;
-    gltf.scene.position.z = 320;
-    gridB.scene.add(gltf.scene);
-    renderB();
-}, undefined, function (error) {
-    console.error( error );
-});
 
 const controls = new TrackballControls(gridB.camera, gridB.renderer.domElement);
 controls.rotateSpeed = 1.0;
@@ -103,8 +87,6 @@ createGrid({ builder: gridB, cell, count, size });
 
 function renderB() {
     requestAnimationFrame(renderB);
-    // time += clock.getDelta();
-    time += .3;
 
     Object.keys(gridB.lines).map(name => {
         if (name.includes('x')) {
