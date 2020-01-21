@@ -128,13 +128,12 @@ export default class ThreeSceneBuilder {
 
     createLine({
                    geometry = new THREE.Geometry(),
-                   // material = {
-                   //     type: 'Basic',
-                   //     props: {
-                   //         color: 'lightblue',
-                   //         wireframe: true,
-                   //     },
-                   // },
+                   material = {
+                       type: 'Basic',
+                       props: {
+                           color: 'white',
+                       },
+                   },
                    rotation = {},
                    // rotationStep = {},
                    name = i,
@@ -145,7 +144,8 @@ export default class ThreeSceneBuilder {
         }
 
         const ThreeGeometry = geometry;
-        const ThreeMaterial = new THREE.LineBasicMaterial( { color: 0x787878, opacity: .2, linewidth: .1 } );
+        // const ThreeMaterial = new THREE.LineBasicMaterial( { color: 0x787878, opacity: .2, linewidth: 2 } );
+        const ThreeMaterial = new THREE[`Line${material.type}Material`](material.props)
         const line = new THREE.Line(ThreeGeometry, ThreeMaterial);
         line.name = name.toString();
         this.lines[name] = {

@@ -45,7 +45,7 @@ gridB.initRenderer({
     .initLight({
         light: {
             type: 'Directional',
-            props: [0xFFFFFF, 6],
+            props: [0xFFFFFF, 4],
         },
         position: {
             y: 700,
@@ -149,19 +149,19 @@ loader.load(car, function (gltf) {
 
 
 
-// const controls = new TrackballControls(gridB.camera, gridB.renderer.domElement);
-// controls.rotateSpeed = 1.0;
-// controls.zoomSpeed = 1.2;
-// controls.panSpeed = 0.8;
-// controls.keys = [65, 83, 68];
+const controls = new TrackballControls(gridB.camera, gridB.renderer.domElement);
+controls.rotateSpeed = 1.0;
+controls.zoomSpeed = 1.2;
+controls.panSpeed = 0.8;
+controls.keys = [65, 83, 68];
 
 
 var renderScene = new RenderPass( gridB.scene, gridB.camera );
 
 var bloomPass = new UnrealBloomPass(
     new THREE.Vector2( window.innerWidth, window.innerHeight ),
-        2.3,
-    .2,
+        .8,
+    1,
     .2
 );
 // bloomPass.threshold = .4;
@@ -184,37 +184,40 @@ var geometry = new THREE.Geometry();
 geometry.vertices.push(new THREE.Vector3( - size, 0, 0 ) );
 geometry.vertices.push(new THREE.Vector3( size, 0, 0 ) );
 
-const linesMaterial = new THREE.LineBasicMaterial( { color: 0x787878, opacity: .2, linewidth: .2 } );
+const linesMaterial = new THREE.LineBasicMaterial( { color: 0x787878, opacity: .2, linewidth: 2 } );
+
+function addLine({ name, position, rotation }) {
+    gridB.createLine({
+        name: name,
+        geometry,
+        position,
+        material: {
+            type: 'Basic',
+            props: {
+                color: 'magenta',
+                linewidth: 2
+            },
+        },
+        rotation
+    })
+}
 
 for ( var i = 0; i <= count; i++ ) {
-
-    // var line = new THREE.Line( geometry, linesMaterial );
-    // line.position.z = ( i * 50 ) - size;
-    // gridB.scene.add( line );
-    //
-    // var line = new THREE.Line( geometry, linesMaterial );
-    // line.position.x = ( i * 50 ) - size;
-    // line.rotation.y = 90 * Math.PI / 180;
-    // gridB.scene.add( line );
-
-    gridB.createLine({
+    addLine({
         name: `linex-${i}`,
-        geometry,
         position: {
             z: ( i * cell ) - size,
-        }
-    })
-
-    gridB.createLine({
+        },
+    });
+    addLine({
         name: `liney-${i}`,
-        geometry,
         position: {
             x: ( i * cell ) - size,
         },
         rotation: {
             y: 90 * Math.PI / 180
         }
-    })
+    });
 }
 
 
@@ -233,20 +236,19 @@ function renderB() {
                 delete gridB.lines[name]
                 const selectedObject = gridB.scene.getObjectByName(name);
                 gridB.scene.remove(selectedObject);
-                gridB.createLine({
-                    name: `linex-${Date.now()}`,
-                    geometry,
+                addLine({
+                    name:  `linex-${Date.now()}`,
                     position: {
                         z: ( 0 * cell ) - size,
-                    }
-                })
+                    },
+                });
             }
         }
     });
 
-    console.log('gridB.scene', gridB.scene);
+    // console.log('gridB.scene', gridB.scene);
 
     gridB.update();
-    // controls.update();
+    controls.update();
     composer.render();
 }
