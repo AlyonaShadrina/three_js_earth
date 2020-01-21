@@ -1,7 +1,8 @@
 import * as THREE from "three";
 import { CubeCamera, OrthographicCamera, PerspectiveCamera, StereoCamera } from "./Camera";
 import { AmbientLight, DirectionalLight, HemisphereLight, PointLight, RectAreaLight, SpotLight } from "./Light";
-import { BasicMaterial, BoxGeometry, PhongMaterial, SphereGeometry } from "./Mesh";
+import { MeshBasicMaterial, BoxGeometry, MeshPhongMaterial, SphereGeometry } from "./Mesh";
+import { LineBasicMaterial } from "./Line";
 
 
 type Coordinates3D = {
@@ -28,11 +29,15 @@ export type Light = Object3D & {
     light?: DirectionalLight | AmbientLight | HemisphereLight | PointLight | SpotLight | RectAreaLight,
 }
 
-type Line = Object3D & { type: 'Line', props: any[]};
+export type Line = Object3D & {
+    geometry?: THREE.Geometry,
+    material?: LineBasicMaterial,
+    name?: string | number,
+};
 
 export type Mesh = Object3D & {
-    geometry?: SphereGeometry | BoxGeometry | Line,
-    material?: BasicMaterial | PhongMaterial,
+    geometry?: SphereGeometry | BoxGeometry,
+    material?: MeshBasicMaterial | MeshPhongMaterial,
     name?: string | number,
 }
 

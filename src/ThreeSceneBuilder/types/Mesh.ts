@@ -14,11 +14,11 @@ export type BoxGeometry = {
 }
 
 // material
-export type BasicMaterial = {
+export type MeshBasicMaterial = {
     type: 'Basic',
     props: THREE.MeshBasicMaterialParameters,
 }
-export type PhongMaterial = {
+export type MeshPhongMaterial = {
     type: 'Phong',
     props: THREE.MeshPhongMaterialParameters,
 }
