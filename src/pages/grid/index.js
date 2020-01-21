@@ -9,7 +9,7 @@ import ThreeSceneBuilder from '../../ThreeSceneBuilder/ThreeSceneBuilder';
 import "../../style.css";
 import "../../navigation";
 import car from '../../assets/tesla_cybertruck/out.glb';
-import { addLine } from './grid';
+import { addLine, createGrid } from './grid';
 
 
 
@@ -97,28 +97,7 @@ const size = 500;
 const count = 20;
 const cell = 50;
 
-
-for ( let i = 0; i <= count; i++ ) {
-    addLine({
-        builder: gridB,
-        name: `linex-${i}`,
-        position: {
-            z: ( i * cell ) - size,
-        },
-        size,
-    });
-    addLine({
-        builder: gridB,
-        name: `liney-${i}`,
-        position: {
-            x: ( i * cell ) - size,
-        },
-        rotation: {
-            y: 90 * Math.PI / 180
-        },
-        size,
-    });
-}
+createGrid({ builder: gridB, cell, count, size });
 
 
 
