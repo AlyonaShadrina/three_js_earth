@@ -1,11 +1,10 @@
-import * as THREE from 'three';
+import { Vector2, Color } from 'three';
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls';
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
-import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
-import "../../navigation";
-import "../../style.css";
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass';
 
+import "../../navigation";
+import "../../style-dark.css";
+import "../../style.css";
 import ThreeSceneBuilder from '../../ThreeSceneBuilder/ThreeSceneBuilder';
 import { addCar } from './car';
 import { addLine, createGrid } from './grid';
@@ -13,14 +12,20 @@ import { addLine, createGrid } from './grid';
 // car by https://sketchfab.com/3d-models/tesla-cybertruck-ee93bd3b43344a34bee3ae0f2edf53ce
 // converted to glb with http://glb-packer.glitch.me/
 
-const gridB = new ThreeSceneBuilder();
+const grid = new ThreeSceneBuilder();
 
-gridB
-    .initRenderer({
+const bloomPass = new UnrealBloomPass(
+    new Vector2( window.innerWidth, window.innerHeight ),
+    .8,
+    1,
+    .2
+);
+
+grid.initRenderer({
         props: {antialias: true}
     })
     .initScene({
-        background: new THREE.Color('#222')
+        background: new Color('#222')
     })
     .initCamera({
      camera: {
@@ -49,58 +54,38 @@ gridB
             y: 700,
             z: -350,
         },
-    });
+    })
+    .addEffect(bloomPass);
 
+const size = 900;
+const count = 20;
+const cell = 90;
 
+createGrid({ builder: grid, cell, count, size });
+addCar({ builder: grid, onload: renderB });
 
-addCar({ builder: gridB, onload: renderB });
-
-
-const controls = new TrackballControls(gridB.camera, gridB.renderer.domElement);
+const controls = new TrackballControls(grid.camera, grid.renderer.domElement);
 controls.rotateSpeed = 1.0;
 controls.zoomSpeed = 1.2;
 controls.panSpeed = 0.8;
 controls.keys = [65, 83, 68];
 
-
-var renderScene = new RenderPass( gridB.scene, gridB.camera );
-
-var bloomPass = new UnrealBloomPass(
-    new THREE.Vector2( window.innerWidth, window.innerHeight ),
-        .8,
-    1,
-    .2
-);
-
-const composer = new EffectComposer( gridB.renderer );
-composer.addPass( renderScene );
-composer.addPass( bloomPass );
-
-
-const size = 500;
-const count = 20;
-const cell = 50;
-
-createGrid({ builder: gridB, cell, count, size });
-
-
-
 function renderB() {
     requestAnimationFrame(renderB);
 
-    Object.keys(gridB.lines).map(name => {
+    Object.keys(grid.lines).map(name => {
         if (name.includes('x')) {
-            if (gridB.lines[name].line.position.z < size) {
-                gridB.lines[name].line.position.z += 1
+            if (grid.lines[name].line.position.z < size) {
+                grid.lines[name].line.position.z += 1
             } else {
-                delete gridB.lines[name]
-                const selectedObject = gridB.scene.getObjectByName(name);
-                gridB.scene.remove(selectedObject);
+                delete grid.lines[name];
+                const selectedObject = grid.scene.getObjectByName(name);
+                grid.scene.remove(selectedObject);
                 addLine({
-                    builder: gridB,
+                    builder: grid,
                     name:  `linex-${Date.now()}`,
                     position: {
-                        z: ( 0 * cell ) - size,
+                        z: -size,
                     },
                     size,
                 });
@@ -108,9 +93,6 @@ function renderB() {
         }
     });
 
-    // console.log('gridB.scene', gridB.scene);
-
-    gridB.update();
+    grid.update();
     controls.update();
-    composer.render();
 }
