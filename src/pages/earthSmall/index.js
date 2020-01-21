@@ -6,7 +6,8 @@ import "../../style.css";
 import "../../style-dark.css";
 import "../../navigation";
 
-import earth from '../../assets/BlackMarble_2016_3km.jpg';
+// import earth from '../../assets/BlackMarble_2016_3km.jpg';
+import earth from '../../assets/BlackMarble_2016_3km-min.jpg';
 // import earth from '../../assets/Composite_map_of_the_world_2012.jpg';
 // import nx from '../../assets/dark-s_nx.jpg';
 // import ny from '../../assets/dark-s_ny.jpg';
@@ -30,9 +31,7 @@ const effectFilm = new FilmPass(1, 1, 2048, false);
 
 const earthPlanet = new ThreeSceneBuilder()
     .initRenderer()
-    .initScene({
-        // background: new THREE.CubeTextureLoader().load( [px, nx, py, ny, pz , nz] ),
-    })
+    .initScene()
     .initCamera({
         camera: {
             type: 'Perspective',
