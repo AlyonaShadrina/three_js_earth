@@ -14,6 +14,7 @@ export default class ThreeSceneBuilder {
     light: THREE.Light;
     meshes: MeshesObject = {};
     lines: any = {};
+    elements: any = {};
     composer: any;
 
 
@@ -146,6 +147,41 @@ export default class ThreeSceneBuilder {
 
         this.scene.add(line);
         i++;
+        return this;
+    }
+
+    createElement({
+        geometry = new THREE.Geometry(),
+        material = {
+           type: 'PointsMaterial',
+           props: {
+               color: 'white',
+           },
+        },
+        element = null,
+        rotation = {},
+        rotationStep = {},
+        name = i,
+        position = {},
+    } = {}) {
+        if (!this.scene) {
+            console.error('You have to .Scene() before .createElement()')
+        }
+        if (element) {
+            const object = new element(geometry, material);
+            this.addPositionAndRotation(object, position, rotation);
+            object.name = name.toString();
+
+            this.elements[name] = {
+                object,
+                rotationStep,
+            };
+
+            this.scene.add(object);
+            i++;
+        }
+
+
         return this;
     }
 

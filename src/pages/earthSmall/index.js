@@ -1,7 +1,6 @@
 import { Vector2 } from 'three';
 import * as THREE from 'three';
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls';
-import { FilmPass } from 'three/examples/jsm/postprocessing/FilmPass';
 import { AfterimagePass } from 'three/examples/jsm/postprocessing/AfterimagePass';
 
 import "../../style.css";
@@ -9,10 +8,8 @@ import "../../style-dark.css";
 import "../../navigation";
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass';
 
-// import sky from '../../assets/VioletTornAmericantoad-size_restricted.gif';
-// import sky from '../../assets/sky3890.jpg';
 import earth from '../../assets/BlackMarble_2016_3km-min.jpg';
-import px from '../../assets/dark-s_px.jpg';
+import circle from '../../assets/circle.png';
 import ThreeSceneBuilder from '../../ThreeSceneBuilder/ThreeSceneBuilder';
 
 
@@ -25,7 +22,6 @@ const mouseListener = (e, thisThree) => {
     thisThree.meshes['earth'].rotationStep.y = -coordX / 1000000;
 };
 
-const effectFilm = new FilmPass(1, 1, 2048, false);
 const bloomPass = new UnrealBloomPass(
     new Vector2( window.innerWidth, window.innerHeight ),
     1,
@@ -34,7 +30,10 @@ const bloomPass = new UnrealBloomPass(
 );
 const earthPlanet = new ThreeSceneBuilder()
     .initRenderer()
-    .initScene()
+    .initScene({
+        background: new THREE.Color('#030610')
+        // background: new THREE.Color('#0a0a15')
+    })
     .initCamera({
         camera: {
             type: 'Perspective',
@@ -56,7 +55,7 @@ const earthPlanet = new ThreeSceneBuilder()
     //     },
     //     light: {
     //         type: 'Directional',
-    //         props: [0xffffff, 2.5],
+    //         props: [0xffffff, 1],
     //     },
     //     rotation: {
     //         z: 90 * Math.PI / 180,
@@ -76,14 +75,32 @@ const earthPlanet = new ThreeSceneBuilder()
     //     //     z: 90 * Math.PI / 180,
     //     // }
     // })
-    .createMesh({
+
+    .addEventListener({
+        type: 'mousemove',
+        listener: mouseListener,
+    })
+    .addEffect(bloomPass);
+
+// psychodel
+// const Afterimage = new AfterimagePass();
+// earthPlanet.addEffect(Afterimage);
+
+// const controls = new TrackballControls(earthPlanet.camera, earthPlanet.renderer.domElement);
+// controls.rotateSpeed = 1.0;
+// controls.zoomSpeed = 1.2;
+// controls.panSpeed = 0.8;
+// controls.keys = [65, 83, 68];
+
+const addEarth = (texture) => {
+    earthPlanet.createMesh({
         geometry: {
             type: 'Sphere',
             props: [50, 100, 50],
         },
         material: {
             type: 'Basic',
-            props: { map: loader.load(earth) },k
+            props: { map: texture },
         },
         rotation: {
             y: -120 * Math.PI / 180
@@ -92,43 +109,33 @@ const earthPlanet = new ThreeSceneBuilder()
             y: 0.0001,
         },
         name: 'earth',
-    })
-    .createMesh({
-        geometry: {
-            type: 'Plane',
-            props: [300, 300, 4],
-        },
-        material: {
-            type: 'Basic',
-            props: {
-                color: 0xffffff,
-                map: loader.load(px),
-                // map: loader.load(sky),
-            }
-        },
+    });
+};
+
+const addStars = (texture) => {
+    const starsGeometry = new THREE.Geometry();
+
+    for (let i = 0; i < 10000; i ++ ) {
+        const star = new THREE.Vector3();
+        star.x = THREE.Math.randFloatSpread(1000);
+        star.y = THREE.Math.randFloatSpread(1000);
+        star.z = THREE.Math.randFloatSpread(100);
+        starsGeometry.vertices.push(star);
+    }
+
+    earthPlanet.createElement({
+        geometry: starsGeometry,
+        material: new THREE.PointsMaterial({
+            color: 0xffffff,
+            map: texture,
+        }),
+        element: THREE.Points,
         position: {
-            z: -60,
-            y: 100,
-        },
-        name: 'plane'
-    })
-    .addEventListener({
-        type: 'mousemove',
-        listener: mouseListener,
-    })
-    // .addEffect(effectFilm);
-    .addEffect(bloomPass);
+            z: -100,
+        }
+    });
+};
 
-// psychodel
-// const Afterimage = new AfterimagePass();
-// earthPlanet.addEffect(Afterimage);
-
-// earthPlanet.scene.fog=new THREE.Fog( 0xffffff, 0, 500 );
-// const controls = new TrackballControls(earthPlanet.camera, earthPlanet.renderer.domElement);
-// controls.rotateSpeed = 1.0;
-// controls.zoomSpeed = 1.2;
-// controls.panSpeed = 0.8;
-// controls.keys = [65, 83, 68];
 
 // some optimizations: stop animation when it is not in view
 let animationFrameId;
@@ -137,7 +144,6 @@ const render = () => {
     animationFrameId = requestAnimationFrame(render);
     earthPlanet.update();
     // controls.update();
-
 };
 
 const stopRender = () => {
@@ -152,7 +158,6 @@ const scroll = () => {
         }
     } else {
         if (!animationFrameId) {
-            console.log('render');
             render();
         }
     }
@@ -163,6 +168,11 @@ const onWindowResize = () => {
     earthPlanet.camera.updateProjectionMatrix();
     earthPlanet.renderer.setSize( window.innerWidth, window.innerHeight );
 };
+
+// add a stars to the background of a scene after star circle loads
+loader.load(circle, addStars);
+// add a earth mesh to scene after map loads
+loader.load(earth, addEarth);
 
 render();
 
