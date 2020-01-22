@@ -95,21 +95,43 @@ const earthPlanet = new ThreeSceneBuilder()
 // const Afterimage = new AfterimagePass();
 // earthPlanet.addEffect(Afterimage);
 
+// some optimizations: stop animation when it is not in view
+let animationFrameId;
 
-render();
-
-function render() {
-    requestAnimationFrame(render);
+const render = () => {
+    animationFrameId = requestAnimationFrame(render);
     earthPlanet.update();
     // controls.update();
-}
 
-window.addEventListener( 'resize', onWindowResize, false );
+};
 
-function onWindowResize() {
+const stopRender = () => {
+    cancelAnimationFrame(animationFrameId);
+    animationFrameId = null;
+};
 
+const scroll = () => {
+    if (window.scrollY > window.innerHeight) {
+        if (animationFrameId) {
+            stopRender();
+        }
+    } else {
+        if (!animationFrameId) {
+            console.log('render');
+            render();
+        }
+    }
+};
+
+const onWindowResize = () => {
     earthPlanet.camera.aspect = window.innerWidth / window.innerHeight;
     earthPlanet.camera.updateProjectionMatrix();
     earthPlanet.renderer.setSize( window.innerWidth, window.innerHeight );
+};
 
-}
+render();
+
+window.addEventListener( 'resize', onWindowResize, false );
+window.addEventListener("focus", render, false);
+window.addEventListener("blur", stopRender, false);
+window.addEventListener("scroll", scroll, false);
