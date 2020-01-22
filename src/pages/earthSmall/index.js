@@ -1,3 +1,4 @@
+import { Vector2 } from 'three';
 import * as THREE from 'three';
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls';
 import { FilmPass } from 'three/examples/jsm/postprocessing/FilmPass';
@@ -6,7 +7,10 @@ import { AfterimagePass } from 'three/examples/jsm/postprocessing/AfterimagePass
 import "../../style.css";
 import "../../style-dark.css";
 import "../../navigation";
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass';
 
+// import sky from '../../assets/VioletTornAmericantoad-size_restricted.gif';
+// import sky from '../../assets/sky3890.jpg';
 import earth from '../../assets/BlackMarble_2016_3km-min.jpg';
 import px from '../../assets/dark-s_px.jpg';
 import ThreeSceneBuilder from '../../ThreeSceneBuilder/ThreeSceneBuilder';
@@ -22,7 +26,12 @@ const mouseListener = (e, thisThree) => {
 };
 
 const effectFilm = new FilmPass(1, 1, 2048, false);
-
+const bloomPass = new UnrealBloomPass(
+    new Vector2( window.innerWidth, window.innerHeight ),
+    1,
+        .3,
+    .2
+);
 const earthPlanet = new ThreeSceneBuilder()
     .initRenderer()
     .initScene()
@@ -39,17 +48,34 @@ const earthPlanet = new ThreeSceneBuilder()
             x: 32 * Math.PI / 180,
         }
     })
-    .initLight({
-        position: {
-            x: .1,
-            y: 0,
-            z: 400,
-        },
-        light: {
-            type: 'Directional',
-            props: [0xffffff, 2.5],
-        }
-    })
+    // .initLight({
+    //     position: {
+    //         x: .1,
+    //         y: 400,
+    //         // z: 400,
+    //     },
+    //     light: {
+    //         type: 'Directional',
+    //         props: [0xffffff, 2.5],
+    //     },
+    //     rotation: {
+    //         z: 90 * Math.PI / 180,
+    //     }
+    // })
+    // .initLight({
+    //     position: {
+    //         x: .1,
+    //         y: 52,
+    //         z: 25,
+    //     },
+    //     light: {
+    //         type: 'Point',
+    //         props: [0x29264c, 50, 20],
+    //     },
+    //     // rotation: {
+    //     //     z: 90 * Math.PI / 180,
+    //     // }
+    // })
     .createMesh({
         geometry: {
             type: 'Sphere',
@@ -57,7 +83,7 @@ const earthPlanet = new ThreeSceneBuilder()
         },
         material: {
             type: 'Basic',
-            props: { map: loader.load(earth) },
+            props: { map: loader.load(earth) },k
         },
         rotation: {
             y: -120 * Math.PI / 180
@@ -77,6 +103,7 @@ const earthPlanet = new ThreeSceneBuilder()
             props: {
                 color: 0xffffff,
                 map: loader.load(px),
+                // map: loader.load(sky),
             }
         },
         position: {
@@ -90,10 +117,18 @@ const earthPlanet = new ThreeSceneBuilder()
         listener: mouseListener,
     })
     // .addEffect(effectFilm);
+    .addEffect(bloomPass);
 
 // psychodel
 // const Afterimage = new AfterimagePass();
 // earthPlanet.addEffect(Afterimage);
+
+// earthPlanet.scene.fog=new THREE.Fog( 0xffffff, 0, 500 );
+// const controls = new TrackballControls(earthPlanet.camera, earthPlanet.renderer.domElement);
+// controls.rotateSpeed = 1.0;
+// controls.zoomSpeed = 1.2;
+// controls.panSpeed = 0.8;
+// controls.keys = [65, 83, 68];
 
 // some optimizations: stop animation when it is not in view
 let animationFrameId;

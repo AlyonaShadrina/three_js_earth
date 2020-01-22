@@ -4,6 +4,7 @@ import * as THREE from "three";
 
 
 // geometry
+/** @link https://threejs.org/docs/#api/en/geometries/SphereGeometry */
 export type SphereGeometry = {
     type: 'Sphere',
     props: [number, number, number],
