@@ -1,5 +1,6 @@
-import { Vector2 } from 'three';
-import * as THREE from 'three';
+import { Vector2, TextureLoader, Color, Geometry, Vector3, Math as ThreeMath, PointsMaterial,
+    Points } from 'three';
+// import * as THREE from 'three';
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls';
 import { AfterimagePass } from 'three/examples/jsm/postprocessing/AfterimagePass';
 
@@ -13,7 +14,7 @@ import circle from '../../assets/circle.png';
 import ThreeSceneBuilder from '../../ThreeSceneBuilder/ThreeSceneBuilder';
 
 
-const loader = new THREE.TextureLoader();
+const loader = new TextureLoader();
 
 const mouseListener = (e, thisThree) => {
     const coordX = e.clientX - thisThree.renderer.domElement.width / 2;
@@ -29,9 +30,12 @@ const bloomPass = new UnrealBloomPass(
     .2
 );
 const earthPlanet = new ThreeSceneBuilder()
-    .initRenderer()
+    .initRenderer({
+        props: { antialias: true }
+        // props: { antialias: true }
+    })
     .initScene({
-        background: new THREE.Color('#030610')
+        background: new Color('#030610')
         // background: new THREE.Color('#0a0a15')
     })
     .initCamera({
@@ -47,34 +51,39 @@ const earthPlanet = new ThreeSceneBuilder()
             x: 42 * Math.PI / 180,
         }
     })
-    // .initLight({
-    //     position: {
-    //         x: .1,
-    //         y: 400,
-    //         // z: 400,
-    //     },
-    //     light: {
-    //         type: 'Directional',
-    //         props: [0xffffff, 1],
-    //     },
-    //     rotation: {
-    //         z: 90 * Math.PI / 180,
-    //     }
-    // })
-    // .initLight({
-    //     position: {
-    //         x: .1,
-    //         y: 52,
-    //         z: 25,
-    //     },
-    //     light: {
-    //         type: 'Point',
-    //         props: [0x29264c, 50, 20],
-    //     },
-    //     // rotation: {
-    //     //     z: 90 * Math.PI / 180,
-    //     // }
-    // })
+    .initLight({
+        position: {
+            x: .1,
+            // y: 400,
+            z: 400,
+        },
+        light: {
+            type: 'Directional',
+            props: [0xffffff, 1.5],
+        },
+        rotation: {
+            // z: 90 * Math.PI / 180,
+        }
+    })
+    .initLight({
+        position: {
+            // x: .1,
+            // y: 50,
+            // z: 25,
+            y: 50,
+            z: -55,
+
+        },
+        light: {
+            // type: 'Point',
+            // props: [0x29264c, 50, 20],
+        type: 'Directional',
+            props: [0x29264c, 50],
+        },
+        rotation: {
+            // z: 90 * Math.PI / 180,
+        }
+    })
     .addEventListener({
         type: 'mousemove',
         listener: mouseListener,
@@ -84,7 +93,7 @@ const earthPlanet = new ThreeSceneBuilder()
 // psychodel
 // const Afterimage = new AfterimagePass();
 // earthPlanet.addEffect(Afterimage);
-
+//
 // const controls = new TrackballControls(earthPlanet.camera, earthPlanet.renderer.domElement);
 // controls.rotateSpeed = 1.0;
 // controls.zoomSpeed = 1.2;
@@ -98,7 +107,7 @@ const addEarth = (texture) => {
             props: [50, 100, 50],
         },
         material: {
-            type: 'Basic',
+            type: 'Lambert',
             props: { map: texture },
         },
         rotation: {
@@ -112,23 +121,23 @@ const addEarth = (texture) => {
 };
 
 const addStars = (texture) => {
-    const starsGeometry = new THREE.Geometry();
+    const starsGeometry = new Geometry();
 
     for (let i = 0; i < 10000; i ++ ) {
-        const star = new THREE.Vector3();
-        star.x = THREE.Math.randFloatSpread(1000);
-        star.y = THREE.Math.randFloatSpread(1000);
-        star.z = THREE.Math.randFloatSpread(100);
+        const star = new Vector3();
+        star.x = ThreeMath.randFloatSpread(1000);
+        star.y = ThreeMath.randFloatSpread(1000);
+        star.z = ThreeMath.randFloatSpread(100);
         starsGeometry.vertices.push(star);
     }
 
     earthPlanet.createElement({
         geometry: starsGeometry,
-        material: new THREE.PointsMaterial({
+        material: new PointsMaterial({
             color: 0xffffff,
             map: texture,
         }),
-        element: THREE.Points,
+        element: Points,
         position: {
             z: -100,
         }
