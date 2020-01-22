@@ -44,7 +44,7 @@ const earthPlanet = new ThreeSceneBuilder()
             z: 50,
         },
         rotation: {
-            x: 32 * Math.PI / 180,
+            x: 42 * Math.PI / 180,
         }
     })
     // .initLight({
@@ -75,7 +75,6 @@ const earthPlanet = new ThreeSceneBuilder()
     //     //     z: 90 * Math.PI / 180,
     //     // }
     // })
-
     .addEventListener({
         type: 'mousemove',
         listener: mouseListener,
@@ -136,13 +135,19 @@ const addStars = (texture) => {
     });
 };
 
+// rotate camera to proper position after earth mesh loaded
+const updateCallback = (builder) => {
+    if (builder.meshes['earth'] && builder.camera.rotation.x > 32 * Math.PI / 180 ) {
+        builder.camera.rotation.x -= .05 * Math.PI / 180
+    }
+};
 
 // some optimizations: stop animation when it is not in view
 let animationFrameId;
 
 const render = () => {
     animationFrameId = requestAnimationFrame(render);
-    earthPlanet.update();
+    earthPlanet.update(updateCallback);
     // controls.update();
 };
 

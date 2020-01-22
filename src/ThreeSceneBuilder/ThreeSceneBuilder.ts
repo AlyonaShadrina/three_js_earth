@@ -204,7 +204,7 @@ export default class ThreeSceneBuilder {
         return this;
     }
 
-    update() {
+    update(callback) {
         Object.keys(this.meshes).map(meshName => {
             const mesh = this.meshes[meshName];
             Object.keys(mesh.rotationStep).map(axis => {
@@ -221,6 +221,7 @@ export default class ThreeSceneBuilder {
         if (this.composer) {
             this.composer.render();
         }
+        callback(this);
         return this;
     }
 
