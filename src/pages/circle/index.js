@@ -34,54 +34,27 @@ basic.initRenderer()
 // addLines(basic, 10, radius);
 addCircles(basic, 12, radius);
 
-const direction = {
-    x: null,
-    y: null,
-};
-let oldCoords = {
-    x: null,
-    y: null,
-}
-
 const mouseListener = (e, thisThree) => {
-
-    if (e.pageX < oldCoords.x) {
-        direction.x = "left"
-    } else if (e.pageX > oldCoords.x) {
-        direction.x = "right"
-    }
-
-    if (e.pageY < oldCoords.y) {
-        direction.y = "top"
-    } else if (e.pageY > oldCoords.y) {
-        direction.y = "bottom"
-    }
-
-    oldCoords = {
-        x: e.pageX,
-        y: e.pageY
-    };
-
-    const moveCoef = .05;
 
     const { domElement } = thisThree.renderer;
 
-    const coordX = e.clientX - domElement.width / 2;
-    const coordY = e.clientY - domElement.height / 2;
     const meshes = thisThree.meshes;
 
     Object.keys(meshes).map(meshName => {
 
         const { mesh } = meshes[meshName];
-        if (mesh.position && meshName != 'ring') {
-            var curx = mesh.position.x, cury = mesh.position.y;
-            var speed = 10000; //follow speed of word, higher number is slower
 
-            let mposx = coordX;
-            let mposy = -coordY;
-            let vec = {
-                x: (mposx-curx),
-                y: (mposy-cury),
+        if (mesh.position && meshName != 'ring') {
+            const circleRadius = mesh.geometry.parameters.radius;
+
+            const speed = 10000 * circleRadius;
+
+            const coordX = e.clientX - domElement.width / 2;
+            const coordY = e.clientY - domElement.height / 2;
+
+            const vec = {
+                x: (coordX - mesh.position.x),
+                y: (-coordY - mesh.position.y),
             };
 
             if ((mesh.position.x + (vec.x * 1/speed)) ** 2 + (mesh.position.y + (vec.y * 1/speed)) ** 2 <= radius ** 2) {
