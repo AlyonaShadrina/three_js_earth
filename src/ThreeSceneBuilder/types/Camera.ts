@@ -1,3 +1,4 @@
+/** @link https://threejs.org/docs/#api/en/cameras/PerspectiveCamera */
 export type PerspectiveCamera = {
     type: 'Perspective',
     props: [number, number, number, number],
