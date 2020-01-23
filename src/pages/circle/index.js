@@ -74,26 +74,46 @@ const mouseListener = (e, thisThree) => {
 
         const { mesh } = meshes[meshName];
         if (mesh.position && meshName != 'ring') {
-            const circleRadius = mesh.geometry.parameters.radius;
 
-            const moveFormula = (moveCoef / (circleRadius / 3));
+
+            var curx = mesh.position.x, cury = mesh.position.y;
+            var speed = 10000; //follow speed of word, higher number is slower
+
+            let mposx = coordX;//library function to find the co-ords of the mouse
+            let mposy = -coordY;
+            // let vec = createVectorDirection(mposx, mposy, curx, cury);//find the vector between the cursor and current text position
+            // let vec = createVector((mposx-curx),(mposy-cury));//find the vector between the cursor and current text position
+            let vec = {
+                x: (mposx-curx),
+                y: (mposy-cury),
+            };//find the vector between the cursor and current text position
+            // moveCurrent(curx, cury, mposx, mposy, vec, speed); // move the text in the direction of the cursor and apply a speed variable
+
+            console.log('vec', vec);
+
+            mesh.position.x += (vec.x * 1/speed);
+            mesh.position.y += (vec.y * 1/speed);
+
+            // drawWords(curx, cury);//curx&cury are updated by moveCurrent then drawn to the canvas
+
+
+
+            // const circleRadius = mesh.geometry.parameters.radius;
             //
-            // console.log('mesh.position.x ** 2 + mesh.position.y ** 2', mesh.position.x ** 2 + mesh.position.y ** 2);
-            // console.log('radius', radius);
-
-            if (
-                ((mesh.position.x ** 2 + mesh.position.y ** 2) <= radius ** 2)
-                && direction.x === 'right'
-            ) {
-                mesh.position.x += (moveFormula);
-            }
-
-            else if (
-                ((mesh.position.x ** 2 + mesh.position.y ** 2) <= radius ** 2)
-                && direction.x === 'left'
-            ) {
-                mesh.position.x -= moveFormula;
-            }
+            // // const moveFormula = (moveCoef / (circleRadius / 3));
+            // const moveFormula = .1;
+            //
+            // if (
+            //     (((mesh.position.x + moveFormula) ** 2 + mesh.position.y ** 2) <= radius ** 2)
+            //     &&  direction.x === "right"
+            // ) {
+            //     mesh.position.x += (moveFormula);
+            // } else if (
+            //     (((mesh.position.x - moveFormula) ** 2 + mesh.position.y ** 2) <= radius ** 2)
+            //     &&  direction.x === "left"
+            // ) {
+            //     mesh.position.x -= moveFormula;
+            // }
         }
 
     })
