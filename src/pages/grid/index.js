@@ -1,15 +1,32 @@
-import * as THREE from 'three';
-import ThreeSceneBuilder from '../../ThreeSceneBuilder/ThreeSceneBuilder';
-import "../../style.css";
+import { Vector2, Color } from 'three';
+import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls';
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass';
+
 import "../../navigation";
+import "../../style-dark.css";
+import "../../style.css";
+import ThreeSceneBuilder from '../../ThreeSceneBuilder/ThreeSceneBuilder';
+import { addCar } from './car';
+import { addLine, createGrid } from './grid';
 
+// car by https://sketchfab.com/3d-models/tesla-cybertruck-ee93bd3b43344a34bee3ae0f2edf53ce
+// converted to glb with http://glb-packer.glitch.me/
 
-const gridB = new ThreeSceneBuilder();
+const grid = new ThreeSceneBuilder();
 
-gridB.initRenderer({
+const bloomPass = new UnrealBloomPass(
+    new Vector2( window.innerWidth, window.innerHeight ),
+    .8,
+    1,
+    .2
+);
+
+grid.initRenderer({
         props: {antialias: true}
     })
-    .initScene()
+    .initScene({
+        background: new Color('#222')
+    })
     .initCamera({
      camera: {
          type: 'Perspective',
@@ -17,88 +34,65 @@ gridB.initRenderer({
              60,
              window.innerWidth / window.innerHeight,
              1,
-             1000
+             3000
          ]
      },
      position: {
-         y: 10,
-         z: 50,
+         y: 320,
+         z: 1050,
+     },
+     rotation: {
+         x: -.1,
      }
-    });
-
-console.log('gridB', gridB);
-
-gridB.camera.lookAt(gridB.scene.position);
-
-const division = 6;
-const limit = 40;
-const grid = new THREE.GridHelper(limit * 2, division, "blue", "blue");
-
-const moveable = [];
-for (let i = 0; i <= division; i++) {
-    moveable.push(1, 1, 0, 0); // move horizontal lines only (1 - point is moveable)
-}
-grid.geometry.addAttribute(
-    "moveable",
-    new THREE.BufferAttribute(new Uint8Array(moveable), 1)
-);
-
-grid.material = new THREE.ShaderMaterial({
-    uniforms: {
-        time: {
-            value: 0
+    })
+    .initLight({
+        light: {
+            type: 'Directional',
+            props: [0xFFFFFF, 4],
         },
-        limits: {
-            value: new THREE.Vector2(-limit, limit)
+        position: {
+            y: 700,
+            z: -350,
         },
-        speed: {
-            value: 5
-        }
-    },
-    vertexShader: `
-    uniform float time;
-    uniform vec2 limits;
-    uniform float speed;
+    })
+    .addEffect(bloomPass);
 
-    attribute float moveable;
+const size = 900;
+const count = 20;
+const cell = 90;
 
-    varying vec3 vColor;
+createGrid({ builder: grid, cell, count, size });
+addCar({ builder: grid, onload: renderB });
 
-    void main() {
-      vColor = color;
-      float limLen = limits.y - limits.x;
-      vec3 pos = position;
-      if (floor(moveable + 0.5) > 0.5){ // if a point has "moveable" attribute = 1
-        float dist = speed * time;
-        float currPos = mod((pos.z + dist) - limits.x, limLen) + limits.x;
-        pos.z = currPos;
-      }
-      gl_Position = projectionMatrix * modelViewMatrix * vec4(pos,1.0);
-    }
-  `,
-    fragmentShader: `
-    varying vec3 vColor;
-
-    void main() {
-      gl_FragColor = vec4(vColor, 1.);
-    }
-  `,
-    vertexColors: THREE.VertexColors,
-});
-
-gridB.scene.add(grid);
-
-const clock = new THREE.Clock();
-let time = 0;
-
-//      .initLight()
-//      .createMesh();
-
-renderB();
+const controls = new TrackballControls(grid.camera, grid.renderer.domElement);
+controls.rotateSpeed = 1.0;
+controls.zoomSpeed = 1.2;
+controls.panSpeed = 0.8;
+controls.keys = [65, 83, 68];
 
 function renderB() {
     requestAnimationFrame(renderB);
-    time += clock.getDelta();
-    grid.material.uniforms.time.value = time;
-    gridB.update();
+
+    Object.keys(grid.lines).map(name => {
+        if (name.includes('x')) {
+            if (grid.lines[name].line.position.z < size) {
+                grid.lines[name].line.position.z += 1
+            } else {
+                delete grid.lines[name];
+                const selectedObject = grid.scene.getObjectByName(name);
+                grid.scene.remove(selectedObject);
+                addLine({
+                    builder: grid,
+                    name:  `linex-${Date.now()}`,
+                    position: {
+                        z: -size,
+                    },
+                    size,
+                });
+            }
+        }
+    });
+
+    grid.update();
+    controls.update();
 }

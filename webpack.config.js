@@ -4,6 +4,7 @@ module.exports = {
     entry: {
         index: './src/pages/index.js',
         earth: './src/pages/earth/index.js',
+        earthSmall: './src/pages/earthSmall/index.js',
         grid: './src/pages/grid/index.js',
         circle: './src/pages/circle/index.js',
     },
@@ -39,7 +40,7 @@ module.exports = {
                 ]
             },
             {
-                test: /\.(png|svg|jpg|gif)$/,
+                test: /\.(png|svg|jpg|gif|glb)$/,
                 use: ["file-loader"]
             }
         ]

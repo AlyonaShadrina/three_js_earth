@@ -1,4 +1,6 @@
 import { TextureLoader, CubeTextureLoader } from 'three';
+import { FilmPass } from 'three/examples/jsm/postprocessing/FilmPass';
+
 import "../../style.css";
 import "../../style-dark.css";
 import "../../navigation";
@@ -10,7 +12,6 @@ import nz from '../../assets/dark-s_nz.jpg';
 import px from '../../assets/dark-s_px.jpg';
 import py from '../../assets/dark-s_py.jpg';
 import pz from '../../assets/dark-s_pz.jpg';
-import { FilmPass } from '../../postprocessing/FilmPass';
 import ThreeSceneBuilder from '../../ThreeSceneBuilder/ThreeSceneBuilder';
 
 
@@ -31,12 +32,16 @@ const earthPlanet = new ThreeSceneBuilder()
         background: new CubeTextureLoader().load( [px, nx, py, ny, pz , nz] ),
     })
     .initCamera({
+        camera: {
+            type: 'Perspective',
+            props: [30, window.innerWidth / window.innerHeight, 1, 1000],
+        },
         position: {
-            y: 35,
-            z: 45,
+            y: 30,
+            z: 50,
         },
         rotation: {
-            x: 30 * Math.PI / 180,
+            x: 32 * Math.PI / 180,
         }
     })
     .initLight()

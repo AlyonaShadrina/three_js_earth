@@ -4,6 +4,7 @@ import * as THREE from "three";
 
 
 // geometry
+/** @link https://threejs.org/docs/#api/en/geometries/SphereGeometry */
 export type SphereGeometry = {
     type: 'Sphere',
     props: [number, number, number],
@@ -26,11 +27,11 @@ export type CircleGeometry = {
 }
 
 // material
-export type BasicMaterial = {
+export type MeshBasicMaterial = {
     type: 'Basic',
     props: THREE.MeshBasicMaterialParameters,
 }
-export type PhongMaterial = {
+export type MeshPhongMaterial = {
     type: 'Phong',
     props: THREE.MeshPhongMaterialParameters,
 }
