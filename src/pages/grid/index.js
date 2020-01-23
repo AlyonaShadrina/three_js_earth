@@ -57,6 +57,8 @@ grid.initRenderer({
     })
     .addEffect(bloomPass);
 
+const speed = 5;
+
 const size = 900;
 const count = 20;
 const cell = 90;
@@ -64,19 +66,36 @@ const cell = 90;
 createGrid({ builder: grid, cell, count, size });
 addCar({ builder: grid, onload: renderB });
 
+
+grid.createMesh({
+    geometry: {
+        type: 'Sphere',
+        props: [200, 10, 10]
+    },
+    position: {
+        z: -300,
+    },
+    name: 'sphere',
+});
+
+
 const controls = new TrackballControls(grid.camera, grid.renderer.domElement);
 controls.rotateSpeed = 1.0;
 controls.zoomSpeed = 1.2;
 controls.panSpeed = 0.8;
 controls.keys = [65, 83, 68];
 
+
 function renderB() {
     requestAnimationFrame(renderB);
+
+    const sphereMesh = grid.meshes.sphere.mesh;
+    sphereMesh.position.z += speed;
 
     Object.keys(grid.lines).map(name => {
         if (name.includes('x')) {
             if (grid.lines[name].line.position.z < size) {
-                grid.lines[name].line.position.z += 1
+                grid.lines[name].line.position.z += speed
             } else {
                 delete grid.lines[name];
                 const selectedObject = grid.scene.getObjectByName(name);

@@ -221,7 +221,9 @@ export default class ThreeSceneBuilder {
         if (this.composer) {
             this.composer.render();
         }
-        callback(this);
+        if (callback) {
+            callback(this);
+        }
         return this;
     }
 
