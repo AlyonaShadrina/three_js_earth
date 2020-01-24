@@ -6,8 +6,8 @@ const basic = new ThreeSceneBuilder();
 basic.initRenderer()
      .initScene()
      .initCamera()
-     .initLight()
-     .createMesh();
+     .createLight()
+     .createElement();
 
 render();
 

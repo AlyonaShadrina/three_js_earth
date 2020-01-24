@@ -2,17 +2,19 @@ import * as THREE from 'three';
 import { random } from '../../helpers';
 
 
-export function addLines(scene, count, maxCoord) {
+export function addLines(builder, count, maxCoord) {
     var material = new THREE.LineBasicMaterial({ color: 'grey' });
 
     const lines = generateRandomLines(count, maxCoord);
-    console.log('lines', lines);
-    lines.map(line => {
+    lines.map((line, i) => {
         const geometry = new THREE.Geometry();
-        console.log('line', line);
         geometry.vertices.push(new THREE.Vector3(...line[0]));
         geometry.vertices.push(new THREE.Vector3(...line[1]));
-        scene.scene.add(new THREE.Line(geometry, material));
+        // geometry.verticesNeedUpdate = true;
+        // geometry.dynamic = true;
+        builder.createElement({
+            geometry, material, element: THREE.Line, name: `line-${i}`
+        });
     })
 
 }

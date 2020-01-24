@@ -1,68 +1,52 @@
-const direction = {
-    x: null,
-    y: null,
-};
-let oldCoords = {
-    x: null,
-    y: null,
-};
-
-export const mouseListener = (e, thisThree, radius = 7) => {
-
-    if (e.pageX < oldCoords.x) {
-        direction.x = "left"
-    } else if (e.pageX > oldCoords.x) {
-        direction.x = "right"
-    }
-
-    if (e.pageY < oldCoords.y) {
-        direction.y = "top"
-    } else if (e.pageY > oldCoords.y) {
-        direction.y = "bottom"
-    }
-
-    oldCoords = {
-        x: e.pageX,
-        y: e.pageY,
-    };
-
-    const moveCoef = 0.05;
+export const mouseListener = (e, thisThree) => {
 
     const { domElement } = thisThree.renderer;
 
+    const radius = thisThree.scene.getObjectByName('ring').geometry.parameters.innerRadius;
+
     const coordX = e.clientX - domElement.width / 2;
     const coordY = e.clientY - domElement.height / 2;
-    const meshes = thisThree.meshes;
 
-    Object.keys(meshes).map(meshName => {
+    thisThree.scene.children.map(mesh => {
 
-        const { mesh } = meshes[meshName];
-        if (mesh.position && meshName != 'ring') {
+        if (mesh.name.includes('circle')) {
             const circleRadius = mesh.geometry.parameters.radius;
 
-            const moveFormula = (1 / circleRadius) * moveCoef;
+            const speed = 5000 * circleRadius;
 
-            if ((mesh.position.x + moveFormula + circleRadius <= radius)
-                && direction.x === 'right'
-            ) {
-                mesh.position.x += moveFormula;
-            } else if ((mesh.position.x - moveFormula - circleRadius >= -radius)
-                && direction.x === 'left'
-            ) {
-                mesh.position.x -= moveFormula;
-            }
+            const vec = {
+                x: (coordX - mesh.position.x),
+                y: (-coordY - mesh.position.y),
+            };
 
-            if ((mesh.position.y + moveFormula + circleRadius <= radius)
-                && direction.y === 'top'
-            ) {
-                mesh.position.y += moveFormula;
-            } else if ((mesh.position.y - moveFormula - circleRadius >= -radius)
-                && direction.y === 'bottom'
-            ) {
-                mesh.position.y -= moveFormula;
+            const centerPositionRadius = (mesh.position.x + (vec.x * 1 / speed)) ** 2 + (mesh.position.y + (vec.y * 1 / speed)) ** 2;
+
+            if (centerPositionRadius <= (radius - circleRadius) ** 2) {
+                mesh.position.x += (vec.x * 1 / speed);
+                mesh.position.y += (vec.y * 1 / speed);
             }
         }
-
+        // if (mesh.name.includes('line')) {
+        //     let { x, y } = mesh.geometry.vertices[0];
+        //
+        //     const vec = {
+        //         x: (coordX - x),
+        //         y: (-coordY - y),
+        //     };
+        //
+        //     const speed = .1
+        //
+        //     const centerPosition = (x + (vec.x * 1/speed)) ** 2 + (y + (vec.y * 1/speed)) ** 2;
+        //
+        //     // if (centerPosition <= radius ** 2 ) {
+        //     //     console.log('move');
+        //         mesh.geometry.vertices[0].x += (vec.x * 1/speed);
+        //         mesh.geometry.vertices[0].y += (vec.y * 1/speed);
+        //         // mesh.position.x += (vec.x * 1/speed);
+        //         // mesh.position.y += (vec.y * 1/speed);
+        //     // }
+        //
+        // }
     })
 
 };

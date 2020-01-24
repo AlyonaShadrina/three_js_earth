@@ -1,3 +1,4 @@
+import { CircleBufferGeometry, MeshBasicMaterial } from 'three';
 import { random } from '../../helpers';
 
 const colors = ['#434a3a', '#e4c663', '#eab9b5', '#ac1422', '#226c56', '#733e52', '#1a5c6a', '#789f8a', '#d21226']
@@ -17,14 +18,16 @@ const generateRandomCircles = (count = 7, maxRadius = 7) => {
         // console.log('sin', sin);
         // console.log('сos', сos);
         circlesArray.push({
-            geometry: [radius, radius * 15],
+            radius,
+            segments: radius * 15,
+            // geometry: [radius, radius * 15],
             position: {
                 // y: y * сos,
                 // x: x * сos,
                 y: y * Math.cos(45 * (Math.PI / 180)),
                 x: x * Math.cos(45 * (Math.PI / 180)),
             },
-            material: {
+            materialProps: {
                 color: colors[random(0, colors.length - 1)],
                 transparent: true,
                 opacity: .5,
@@ -35,20 +38,12 @@ const generateRandomCircles = (count = 7, maxRadius = 7) => {
 }
 
 export function addCircles(scene, count, maxRadius) {
-    generateRandomCircles(count, maxRadius).map(cirlce => {
-        scene.createMesh({
-            geometry: {
-                type: 'Circle',
-                props: cirlce.geometry,
-            },
-            material: {
-                type: 'Lambert',
-                props: {
-                    color: 'red',
-                    ...cirlce.material,
-                },
-            },
-            position: cirlce.position,
+    generateRandomCircles(count, maxRadius).map((circle, i) => {
+        scene.createElement({
+            geometry: new CircleBufferGeometry(circle.radius, circle.segments),
+            material: new MeshBasicMaterial(circle.materialProps),
+            position: circle.position,
+            name: `circle-${i}`
         })
     })
 }

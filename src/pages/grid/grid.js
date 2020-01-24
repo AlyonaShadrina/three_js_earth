@@ -1,4 +1,4 @@
-import { Geometry, Vector3 } from 'three';
+import { Geometry, Vector3, LineBasicMaterial, Line } from 'three';
 
 
 export const addLine = ({ builder, name, position, rotation, size }) => {
@@ -6,18 +6,13 @@ export const addLine = ({ builder, name, position, rotation, size }) => {
     geometry.vertices.push(new Vector3( -size, 0, 0 ) );
     geometry.vertices.push(new Vector3( size, 0, 0 ) );
 
-    builder.createLine({
-        name: name,
+    builder.createElement({
         geometry,
+        material: new LineBasicMaterial({ color: 'magenta', linewidth: 2 }),
+        element: Line,
         position,
-        material: {
-            type: 'Basic',
-            props: {
-                color: 'magenta',
-                linewidth: 2,
-            },
-        },
         rotation,
+        name,
     })
 }
 
