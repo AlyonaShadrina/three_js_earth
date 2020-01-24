@@ -1,9 +1,8 @@
 export const mouseListener = (e, thisThree) => {
 
-    const { domElement } = thisThree.renderer;
-
     const radius = thisThree.scene.getObjectByName('ring').geometry.parameters.innerRadius;
 
+    const { domElement } = thisThree.renderer;
     const coordX = e.clientX - domElement.width / 2;
     const coordY = e.clientY - domElement.height / 2;
 
