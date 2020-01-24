@@ -42,6 +42,7 @@ var raycaster = new THREE.Raycaster();
 var mouse = new THREE.Vector2();
 
 let INTERSECTED;
+let SELECTED;
 
 render();
 
@@ -59,7 +60,7 @@ function onMouseMove( event ) {
             INTERSECTED = intersects[ 0 ].object;
             INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
             INTERSECTED.material.emissive.setHex( 0xff0000 );
-            console.log(INTERSECTED.position);
+            // console.log(INTERSECTED.position);
 
             const coordX = mouse.x;
             const coordY = mouse.y;
@@ -90,22 +91,30 @@ function onMouseMove( event ) {
         INTERSECTED = null;
     }
 
+    if (SELECTED && intersects[0]) {
+        const centerPositionRadius = intersects[0].point.x ** 2 + intersects[0].point.y ** 2;
+
+        if (centerPositionRadius <= (radius - SELECTED.geometry.parameters.radius) ** 2) {
+            SELECTED.position.copy(intersects[0].point);
+        }
+    }
+
 }
 
-window.addEventListener( 'click', function(event) {
 
+basic.renderer.domElement.addEventListener( 'mousedown', function(event) {
     var intersects = raycaster.intersectObjects( basic.scene.children );
-
-    console.log('intersects', intersects);
-
-    intersects[0].object.position.copy(intersects[0].point);
-    object.worldToLocal(intersects[0].point);//if the cube has been scaled the vertices coordinates don't match the world coordinates. This line converts the vector to local coordinates.
-    object.geometry.vertices[intersects[0].object.data.index].copy(intersects[0].point);
-    object.geometry.verticesNeedUpdate=true;
-
-
+    if (intersects[0]) {
+        SELECTED = intersects[0].object
+    }
 }, false );
-window.addEventListener( 'mousemove', onMouseMove, false );
+
+basic.renderer.domElement.addEventListener( 'mouseup', function(event) {
+    SELECTED = null
+}, false );
+
+
+basic.renderer.domElement.addEventListener( 'mousemove', onMouseMove, false );
 
 function render() {
     raycaster.setFromCamera( mouse, basic.camera );
