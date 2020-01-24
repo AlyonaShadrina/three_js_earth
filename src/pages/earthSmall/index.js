@@ -42,7 +42,7 @@ const earthPlanet = new ThreeSceneBuilder()
             x: 42 * Math.PI / 180,
         }
     })
-    .initLight({
+    .createLight({
         position: {
             x: .1,
             z: 400,
@@ -52,7 +52,7 @@ const earthPlanet = new ThreeSceneBuilder()
             props: [0xffffff, 1.5],
         },
     })
-    .initLight({
+    .createLight({
         position: {
             y: 50,
             z: -55,

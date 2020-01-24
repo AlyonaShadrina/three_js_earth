@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
 
-import { Camera, EventListener, Light, Mesh, Line, MeshesObject, Scene } from "./types";
+import { Camera, EventListener, Light, Scene } from "./types";
 
 
 let i = 0;
@@ -12,8 +12,6 @@ export default class ThreeSceneBuilder {
     scene: THREE.Scene;
     camera: THREE.Camera;
     light: THREE.Light;
-    meshes: MeshesObject = {};
-    // lines: any = {};
     composer: any;
 
 
@@ -53,7 +51,7 @@ export default class ThreeSceneBuilder {
         return this;
     }
 
-    initLight({
+    createLight({
         light = {
             type: 'Directional',
             props: [0xFFFFFF, 1],
@@ -76,78 +74,6 @@ export default class ThreeSceneBuilder {
         this.scene.add(this.light);
         return this;
     }
-
-    createMesh({
-        geometry = {
-            type: 'Sphere',
-            props: [5, 10, 10],
-        },
-        material = {
-            type: 'Basic',
-            props: {
-               color: 'lightblue',
-               wireframe: true,
-            },
-        },
-        rotation = {},
-        position = {},
-        rotationStep = {},
-        name = i,
-    }: Mesh = {}) {
-        if (!this.scene) {
-            console.error('You have to .Scene() before .createMesh()')
-        }
-
-        const ThreeGeometry = new THREE[`${geometry.type}BufferGeometry`](...geometry.props);
-        const ThreeMaterial = new THREE[`Mesh${material.type}Material`](material.props);
-        const mesh = new THREE.Mesh(ThreeGeometry, ThreeMaterial);
-
-        this.addPositionAndRotation(mesh, position, rotation);
-        mesh.name = name.toString();
-
-        this.meshes[name] = {
-            mesh,
-            rotationStep,
-        };
-
-        this.scene.add(mesh);
-        i++;
-        return this;
-    }
-
-    // createLine({
-    //     geometry = new THREE.Geometry(),
-    //     material = {
-    //        type: 'Basic',
-    //        props: {
-    //            color: 'white',
-    //        },
-    //     },
-    //     rotation = {},
-    //     rotationStep = {},
-    //     name = i,
-    //     position = {},
-    // }: Line = {}) {
-    //     if (!this.scene) {
-    //         console.error('You have to .Scene() before .createLine()')
-    //     }
-    //
-    //     const ThreeGeometry = geometry;
-    //     const ThreeMaterial = new THREE[`Line${material.type}Material`](material.props);
-    //     const line = new THREE.Line(ThreeGeometry, ThreeMaterial);
-    //
-    //     this.addPositionAndRotation(line, position, rotation);
-    //     line.name = name.toString();
-    //
-    //     this.lines[name] = {
-    //         line,
-    //         rotationStep,
-    //     };
-    //
-    //     this.scene.add(line);
-    //     i++;
-    //     return this;
-    // }
 
     createElement({
         geometry = new THREE.SphereBufferGeometry(5, 10, 10),
@@ -195,18 +121,6 @@ export default class ThreeSceneBuilder {
     }
 
     update(callback) {
-        // Object.keys(this.meshes).map(meshName => {
-        //     const mesh = this.meshes[meshName];
-        //     Object.keys(mesh.rotationStep).map(axis => {
-        //         mesh.mesh.rotation[axis] += mesh.rotationStep[axis]
-        //     })
-        // });
-        // Object.keys(this.lines).map(lineName => {
-        //     const line = this.lines[lineName];
-        //     Object.keys(line.rotationStep).map(axis => {
-        //         line.line.rotation[axis] += line.rotationStep[axis]
-        //     })
-        // });
         this.renderer.render(this.scene, this.camera);
         if (this.composer) {
             this.composer.render();

@@ -39,7 +39,7 @@ grid.initRenderer({
          x: -.1,
      }
     })
-    .initLight({
+    .createLight({
         light: {
             type: 'Directional',
             props: [0xFFFFFF, 4],

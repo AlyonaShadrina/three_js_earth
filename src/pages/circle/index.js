@@ -17,14 +17,14 @@ basic.initRenderer()
         background: new THREE.Color('#e1d1c2'),
     })
     .initCamera()
-    .initLight()
+    .createLight()
     .createElement({
         geometry: new RingBufferGeometry(radius, radius + .5, radius * 15),
         material: new MeshBasicMaterial({  color: '#1c2124' }),
         name: 'ring'
     });
 
-// addLines(basic, 10, radius);
+addLines(basic, 10, radius);
 addCircles(basic, 12, radius);
 
 const mouseListener = (e, thisThree) => {

@@ -44,7 +44,7 @@ const earthPlanet = new ThreeSceneBuilder()
             x: 32 * Math.PI / 180,
         }
     })
-    .initLight()
+    .createLight()
     .createMesh({
         geometry: {
             type: 'Sphere',
