@@ -167,12 +167,11 @@ export default class ThreeSceneBuilder {
             this.addPositionAndRotation(object, position, rotation);
             object.name = name.toString();
 
-            this.elements[name] = object;
+            // this.elements[name] = object;
 
             this.scene.add(object);
             i++;
         // }
-
 
         return this;
     }
