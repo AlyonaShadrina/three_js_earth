@@ -13,8 +13,7 @@ export default class ThreeSceneBuilder {
     camera: THREE.Camera;
     light: THREE.Light;
     meshes: MeshesObject = {};
-    lines: any = {};
-    elements: any = {};
+    // lines: any = {};
     composer: any;
 
 
@@ -116,39 +115,39 @@ export default class ThreeSceneBuilder {
         return this;
     }
 
-    createLine({
-        geometry = new THREE.Geometry(),
-        material = {
-           type: 'Basic',
-           props: {
-               color: 'white',
-           },
-        },
-        rotation = {},
-        rotationStep = {},
-        name = i,
-        position = {},
-    }: Line = {}) {
-        if (!this.scene) {
-            console.error('You have to .Scene() before .createLine()')
-        }
-
-        const ThreeGeometry = geometry;
-        const ThreeMaterial = new THREE[`Line${material.type}Material`](material.props);
-        const line = new THREE.Line(ThreeGeometry, ThreeMaterial);
-
-        this.addPositionAndRotation(line, position, rotation);
-        line.name = name.toString();
-
-        this.lines[name] = {
-            line,
-            rotationStep,
-        };
-
-        this.scene.add(line);
-        i++;
-        return this;
-    }
+    // createLine({
+    //     geometry = new THREE.Geometry(),
+    //     material = {
+    //        type: 'Basic',
+    //        props: {
+    //            color: 'white',
+    //        },
+    //     },
+    //     rotation = {},
+    //     rotationStep = {},
+    //     name = i,
+    //     position = {},
+    // }: Line = {}) {
+    //     if (!this.scene) {
+    //         console.error('You have to .Scene() before .createLine()')
+    //     }
+    //
+    //     const ThreeGeometry = geometry;
+    //     const ThreeMaterial = new THREE[`Line${material.type}Material`](material.props);
+    //     const line = new THREE.Line(ThreeGeometry, ThreeMaterial);
+    //
+    //     this.addPositionAndRotation(line, position, rotation);
+    //     line.name = name.toString();
+    //
+    //     this.lines[name] = {
+    //         line,
+    //         rotationStep,
+    //     };
+    //
+    //     this.scene.add(line);
+    //     i++;
+    //     return this;
+    // }
 
     createElement({
         geometry = new THREE.SphereBufferGeometry(5, 10, 10),

@@ -13,16 +13,10 @@ import { addLine, createGrid } from './grid';
 // converted to glb with http://glb-packer.glitch.me/
 
 const grid = new ThreeSceneBuilder();
-
-const bloomPass = new UnrealBloomPass(
-    new Vector2( window.innerWidth, window.innerHeight ),
-    .8,
-    1,
-    .2
-);
+const bloomPass = new UnrealBloomPass(new Vector2( window.innerWidth, window.innerHeight ), .8, 1, .2);
 
 grid.initRenderer({
-        props: {antialias: true}
+        props: { antialias: true }
     })
     .initScene({
         background: new Color('#222')
@@ -73,12 +67,12 @@ controls.keys = [65, 83, 68];
 function renderB() {
     requestAnimationFrame(renderB);
 
-    Object.keys(grid.lines).map(name => {
+    grid.scene.children.map(el => {
+        const { name } = el;
         if (name.includes('x')) {
-            if (grid.lines[name].line.position.z < size) {
-                grid.lines[name].line.position.z += 1
+            if (el.position.z < size) {
+                el.position.z += 1
             } else {
-                delete grid.lines[name];
                 const selectedObject = grid.scene.getObjectByName(name);
                 grid.scene.remove(selectedObject);
                 addLine({
