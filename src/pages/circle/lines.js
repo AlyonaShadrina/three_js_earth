@@ -6,12 +6,14 @@ export function addLines(builder, count, maxCoord) {
     var material = new THREE.LineBasicMaterial({ color: 'grey' });
 
     const lines = generateRandomLines(count, maxCoord);
-    lines.map(line => {
+    lines.map((line, i) => {
         const geometry = new THREE.Geometry();
         geometry.vertices.push(new THREE.Vector3(...line[0]));
         geometry.vertices.push(new THREE.Vector3(...line[1]));
+        // geometry.verticesNeedUpdate = true;
+        // geometry.dynamic = true;
         builder.createElement({
-            geometry, material, element: THREE.Line,
+            geometry, material, element: THREE.Line, name: `line-${i}`
         });
     })
 
