@@ -24,7 +24,7 @@ basic.initRenderer()
         name: 'ring'
     });
 
-addLines(basic, 10, radius);
+// addLines(basic, 10, radius);
 addCircles(basic, 12, radius);
 
 const mouseListener = (e, thisThree) => {
@@ -46,7 +46,9 @@ const mouseListener = (e, thisThree) => {
                 y: (-coordY - mesh.position.y),
             };
 
-            if ((mesh.position.x + (vec.x * 1/speed)) ** 2 + (mesh.position.y + (vec.y * 1/speed)) ** 2 <= radius ** 2) {
+            const centerPositionRadius = (mesh.position.x + (vec.x * 1/speed)) ** 2 + (mesh.position.y + (vec.y * 1/speed)) ** 2;
+
+            if (centerPositionRadius <= (radius - circleRadius) ** 2 ) {
                 mesh.position.x += (vec.x * 1/speed);
                 mesh.position.y += (vec.y * 1/speed);
             }
