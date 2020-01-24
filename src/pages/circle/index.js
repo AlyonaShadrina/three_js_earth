@@ -1,12 +1,11 @@
-import { MeshBasicMaterial, RingBufferGeometry } from 'three';
-import * as THREE from 'three';
+import { RingBufferGeometry, MeshBasicMaterial, Color } from 'three';
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls';
 import "../../navigation";
 import "../../style.css";
 
 import ThreeSceneBuilder from '../../ThreeSceneBuilder/ThreeSceneBuilder';
 import { addCircles } from './circles';
-import { addLines } from './lines';
+import { mouseListener } from './mouseListener';
 
 
 const radius = 7;
@@ -14,7 +13,7 @@ const radius = 7;
 const basic = new ThreeSceneBuilder();
 basic.initRenderer()
     .initScene({
-        background: new THREE.Color('#e1d1c2'),
+        background: new Color('#e1d1c2'),
     })
     .initCamera()
     .createLight()
@@ -26,58 +25,6 @@ basic.initRenderer()
 
 // addLines(basic, 10, radius);
 addCircles(basic, 12, radius);
-
-const mouseListener = (e, thisThree) => {
-
-    const { domElement } = thisThree.renderer;
-
-
-    const coordX = e.clientX - domElement.width / 2;
-    const coordY = e.clientY - domElement.height / 2;
-
-    thisThree.scene.children.map(mesh => {
-
-        if (mesh.name.includes('circle')) {
-            const circleRadius = mesh.geometry.parameters.radius;
-
-            const speed = 10000 * circleRadius;
-
-            const vec = {
-                x: (coordX - mesh.position.x),
-                y: (-coordY - mesh.position.y),
-            };
-
-            const centerPositionRadius = (mesh.position.x + (vec.x * 1/speed)) ** 2 + (mesh.position.y + (vec.y * 1/speed)) ** 2;
-
-            if (centerPositionRadius <= (radius - circleRadius) ** 2 ) {
-                mesh.position.x += (vec.x * 1/speed);
-                mesh.position.y += (vec.y * 1/speed);
-            }
-        }
-        // if (mesh.name.includes('line')) {
-        //     let { x, y } = mesh.geometry.vertices[0];
-        //
-        //     const vec = {
-        //         x: (coordX - x),
-        //         y: (-coordY - y),
-        //     };
-        //
-        //     const speed = .1
-        //
-        //     const centerPosition = (x + (vec.x * 1/speed)) ** 2 + (y + (vec.y * 1/speed)) ** 2;
-        //
-        //     // if (centerPosition <= radius ** 2 ) {
-        //     //     console.log('move');
-        //         mesh.geometry.vertices[0].x += (vec.x * 1/speed);
-        //         mesh.geometry.vertices[0].y += (vec.y * 1/speed);
-        //         // mesh.position.x += (vec.x * 1/speed);
-        //         // mesh.position.y += (vec.y * 1/speed);
-        //     // }
-        //
-        // }
-    })
-
-};
 
 basic.addEventListener({
     type: 'mousemove',
@@ -96,11 +43,4 @@ function render() {
     requestAnimationFrame(render);
     basic.update();
     // controls.update();
-}
-
-
-function radToDeg(radians)
-{
-    var pi = Math.PI;
-    return radians * (180/pi);
 }
