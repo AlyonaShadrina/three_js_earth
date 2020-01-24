@@ -151,35 +151,27 @@ export default class ThreeSceneBuilder {
     }
 
     createElement({
-        geometry = new THREE.Geometry(),
-        material = {
-           type: 'PointsMaterial',
-           props: {
-               color: 'white',
-           },
-        },
-        element = null,
+        geometry = new THREE.SphereBufferGeometry(5, 10, 10),
+        material = new THREE.MeshBasicMaterial({ color: 'lightblue', wireframe: true, }),
+        element = THREE.Mesh,
         rotation = {},
-        rotationStep = {},
+        // rotationStep = {},
         name = i,
         position = {},
     } = {}) {
         if (!this.scene) {
             console.error('You have to .Scene() before .createElement()')
         }
-        if (element) {
+        // if (element) {
             const object = new element(geometry, material);
             this.addPositionAndRotation(object, position, rotation);
             object.name = name.toString();
 
-            this.elements[name] = {
-                object,
-                rotationStep,
-            };
+            this.elements[name] = object;
 
             this.scene.add(object);
             i++;
-        }
+        // }
 
 
         return this;
@@ -205,18 +197,18 @@ export default class ThreeSceneBuilder {
     }
 
     update(callback) {
-        Object.keys(this.meshes).map(meshName => {
-            const mesh = this.meshes[meshName];
-            Object.keys(mesh.rotationStep).map(axis => {
-                mesh.mesh.rotation[axis] += mesh.rotationStep[axis]
-            })
-        });
-        Object.keys(this.lines).map(lineName => {
-            const line = this.lines[lineName];
-            Object.keys(line.rotationStep).map(axis => {
-                line.line.rotation[axis] += line.rotationStep[axis]
-            })
-        });
+        // Object.keys(this.meshes).map(meshName => {
+        //     const mesh = this.meshes[meshName];
+        //     Object.keys(mesh.rotationStep).map(axis => {
+        //         mesh.mesh.rotation[axis] += mesh.rotationStep[axis]
+        //     })
+        // });
+        // Object.keys(this.lines).map(lineName => {
+        //     const line = this.lines[lineName];
+        //     Object.keys(line.rotationStep).map(axis => {
+        //         line.line.rotation[axis] += line.rotationStep[axis]
+        //     })
+        // });
         this.renderer.render(this.scene, this.camera);
         if (this.composer) {
             this.composer.render();

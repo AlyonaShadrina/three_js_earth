@@ -7,7 +7,7 @@ basic.initRenderer()
      .initScene()
      .initCamera()
      .initLight()
-     .createMesh();
+     .createElement();
 
 render();
 

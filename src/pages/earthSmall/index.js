@@ -19,6 +19,7 @@ const loader = new TextureLoader();
 const mouseListener = (e, thisThree) => {
     const coordX = e.clientX - thisThree.renderer.domElement.width / 2;
     const coordY = e.clientY - thisThree.renderer.domElement.height / 2;
+    console.log('thisThree', thisThree);
     thisThree.meshes['earth'].rotationStep.x = -coordY / 1000000;
     thisThree.meshes['earth'].rotationStep.y = -coordX / 1000000;
 };
