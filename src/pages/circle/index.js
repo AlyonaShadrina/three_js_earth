@@ -1,3 +1,4 @@
+import { MeshBasicMaterial, RingBufferGeometry } from 'three';
 import * as THREE from 'three';
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls';
 import "../../navigation";
@@ -17,17 +18,9 @@ basic.initRenderer()
     })
     .initCamera()
     .initLight()
-    .createMesh({
-        geometry: {
-            type: 'Ring',
-            props: [radius, radius + .5, radius * 15],
-        },
-        material: {
-            type: 'Basic',
-            props: {
-                color: '#1c2124',
-            },
-        },
+    .createElement({
+        geometry: new RingBufferGeometry(radius, radius + .5, radius * 15),
+        material: new MeshBasicMaterial({  color: '#1c2124' }),
         name: 'ring'
     });
 
@@ -38,13 +31,9 @@ const mouseListener = (e, thisThree) => {
 
     const { domElement } = thisThree.renderer;
 
-    const meshes = thisThree.meshes;
+    thisThree.scene.children.map(mesh => {
 
-    Object.keys(meshes).map(meshName => {
-
-        const { mesh } = meshes[meshName];
-
-        if (mesh.position && meshName != 'ring') {
+        if (mesh.name.includes('circle')) {
             const circleRadius = mesh.geometry.parameters.radius;
 
             const speed = 10000 * circleRadius;
