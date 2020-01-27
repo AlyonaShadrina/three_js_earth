@@ -99,7 +99,7 @@ window.addEventListener("focus", render, false);
 window.addEventListener("blur", stopRender, false);
 window.addEventListener("scroll", scroll, false);
 
-console.log('earthPlanet', earthPlanet);
+// console.log('earthPlanet', earthPlanet);
 
 function render() {
     animationFrameId = requestAnimationFrame(render);

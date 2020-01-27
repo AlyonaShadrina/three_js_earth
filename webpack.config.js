@@ -49,7 +49,7 @@ module.exports = {
         extensions: ['.ts', '.js'],
     },
     devServer: {
-        contentBase: path.join(__dirname, "dist"),
+        contentBase: [path.join(__dirname, "dist"), path.join(__dirname, "src")],
         compress: true,
         port: 9000,
         watchContentBase: true,
