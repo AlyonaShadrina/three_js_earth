@@ -16,8 +16,8 @@ self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open('v1').then((cache) => {
             return cache.addAll([
-                './earth-small.html',
-                './earth-small.js',
+                '/three_js_earth/earth-small.html',
+                '/three_js_earth/earth-small.js',
             ]);
         })
     );
