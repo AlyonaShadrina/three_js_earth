@@ -18,7 +18,7 @@ const VERSION = 'version_01'              // Version of the off-line cache (chan
 const CACHE_NAME = APP_PREFIX + VERSION
 const URLS = [                            // Add URL you want to cache in this list.
     '/three_js_earth/',                     // If you have separate JS/CSS files,
-    '/three_js_earth/earth-small.html'            // add path to those files here
+    '/three_js_earth/earth-small.html',            // add path to those files here
     '/three_js_earth/earthSmall.js'            // add path to those files here
 ]
 
