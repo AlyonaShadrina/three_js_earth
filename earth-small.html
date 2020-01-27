@@ -15,7 +15,7 @@
         <script>
             if ('serviceWorker' in navigator) {
                 window.addEventListener('load', () => {
-                    navigator.serviceWorker.register('/three_js_earth/sw.js')
+                    navigator.serviceWorker.register('/three_js_earth/sw.js', {scope: '/three_js_earth/'})
                         .then(registration => {
                             console.log(`Service Worker registered! Scope: ${registration.scope}`);
                         })
