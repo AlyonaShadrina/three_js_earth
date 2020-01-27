@@ -9,29 +9,29 @@
 // //     console.log(`Boo! Workbox didn't load 😬`);
 // // }
 // //
-const version = 'v4'
+// const version = 'v4'
 
 console.log('self', self);
+
+const APP_PREFIX = 'ApplicationName_'     // Identifier for this app (this needs to be consistent across every cache update)
+const VERSION = 'version_01'              // Version of the off-line cache (change this value everytime you want to update cache)
+const CACHE_NAME = APP_PREFIX + VERSION
+const URLS = [                            // Add URL you want to cache in this list.
+    '/three_js_earth/',                     // If you have separate JS/CSS files,
+    '/three_js_earth/earth-small.html'            // add path to those files here
+    '/three_js_earth/earthSmall.js'            // add path to those files here
+]
+
 self.addEventListener('install', (event) => {
     console.log('install', event);
-    console.log('version', version);
+    console.log('CACHE_NAME', CACHE_NAME);
     event.waitUntil(
-        caches.open(version).then((cache) => {
-            return cache.addAll([
-                '/three_js_earth/earth-small.html',
-                '/three_js_earth/earthSmall.js',
-            ]);
+        caches.open(CACHE_NAME).then((cache) => {
+            return cache.addAll(URLS);
         })
     );
 });
-// var APP_PREFIX = 'ApplicationName_'     // Identifier for this app (this needs to be consistent across every cache update)
-// var VERSION = 'version_01'              // Version of the off-line cache (change this value everytime you want to update cache)
-// var CACHE_NAME = APP_PREFIX + VERSION
-// var URLS = [                            // Add URL you want to cache in this list.
-//     '/three_js_earth/',                     // If you have separate JS/CSS files,
-//     '/three_js_earth/earth-small.html'            // add path to those files here
-//     '/three_js_earth/earthSmall.js'            // add path to those files here
-// ]
+
 //
 // // Respond with cached resources
 // self.addEventListener('fetch', function (e) {
