@@ -3,6 +3,7 @@ import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
 
 import { Camera, EventListener, Light, Scene } from "./types";
+import Stats from "three/examples/jsm/libs/stats.module";
 
 
 let i = 0;
@@ -13,14 +14,21 @@ export default class ThreeSceneBuilder {
     camera: THREE.Camera;
     light: THREE.Light;
     composer: any;
+    stats: any;
 
 
     initRenderer({
+        stats = false,
         props = {}
     } = {}) {
         this.renderer = new THREE.WebGLRenderer(props);
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(this.renderer.domElement);
+        if (stats) {
+            // @ts-ignore
+            this.stats = new Stats();
+            document.body.appendChild( this.stats.dom );
+        }
         return this;
     }
 
@@ -124,6 +132,9 @@ export default class ThreeSceneBuilder {
         this.renderer.render(this.scene, this.camera);
         if (this.composer) {
             this.composer.render();
+        }
+        if (this.stats) {
+            this.stats.update();
         }
         if (callback) {
             callback(this);

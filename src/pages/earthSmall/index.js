@@ -14,6 +14,8 @@ import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPa
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls';
 import { AfterimagePass } from 'three/examples/jsm/postprocessing/AfterimagePass';
 
+import Stats from 'three/examples/jsm/libs/stats.module';
+
 import "../../style.css";
 import "../../style-dark.css";
 import "../../navigation";
@@ -27,8 +29,13 @@ const loader = new TextureLoader();
 const bloomPass = new UnrealBloomPass(new Vector2( window.innerWidth, window.innerHeight ), 1, .3, .2);
 
 const earthPlanet = new ThreeSceneBuilder()
-    .initRenderer({ props: { antialias: true } })
-    .initScene({ background: new Color('#030610') })
+    .initRenderer({
+        stats: process.env.NODE_ENV === "development",
+        props: { antialias: true },
+    })
+    .initScene({
+        background: new Color('#030610'),
+    })
     .initCamera({
         camera: {
             type: 'Perspective',
@@ -91,6 +98,8 @@ const rotationStep = {
 
 // some optimizations: stop animation when it is not in view
 let animationFrameId;
+
+const stats = new Stats;
 
 render();
 

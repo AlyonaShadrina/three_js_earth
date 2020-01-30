@@ -8,7 +8,6 @@ module.exports = {
         grid: './src/pages/grid/index.js',
         circle: './src/pages/circle/index.js',
     },
-    mode: "development",
     output: {
         filename: "./[name].js",
         path: __dirname + '/dist'
