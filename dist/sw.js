@@ -2,6 +2,12 @@ const APP_PREFIX = 'THREE.js_';
 const VERSION = 'v_02';
 const CACHE_NAME = APP_PREFIX + VERSION;
 
+const URLS = [                            // Add URL you want to cache in this list.
+    '/three_js_earth/',                     // If you have separate JS/CSS files,
+    '/three_js_earth/earth-small.html',            // add path to those files here
+    '/three_js_earth/earthSmall.js',            // add path to those files here
+];
+
 // earth-small scripts + sw seemes to be slowing down everything very much when page loads
 
 if (URLS) {
