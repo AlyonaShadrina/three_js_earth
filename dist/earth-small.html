@@ -13,6 +13,13 @@
     <body>
         <script type="text/javascript" src="earthSmall.js"></script>
         <script>
+            const URLS = [
+                '/three_js_earth/',
+                '/three_js_earth/earth-small.html',
+                '/three_js_earth/earthSmall.js',
+            ];
+        </script>
+        <script>
             if ('serviceWorker' in navigator) {
                 window.addEventListener('load', () => {
                     navigator.serviceWorker.register('/three_js_earth/sw.js')
