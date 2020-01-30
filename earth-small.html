@@ -1,29 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Three.js</title>
-        <style>
-            body {
-                height: 250vh !important;
-            }
-        </style>
-    </head>
-    <body>
-        <script type="text/javascript" src="earthSmall.js"></script>
-        <script>
-            if ('serviceWorker' in navigator) {
-                window.addEventListener('load', () => {
-                    navigator.serviceWorker.register('/three_js_earth/sw.js')
-                        .then(registration => {
-                            console.log(`Service Worker registered! Scope: ${registration.scope}`);
-                        })
-                        .catch(err => {
-                            console.log(`Service Worker registration failed: ${err}`);
-                        });
-                });
-            }
-        </script>
-    </body>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Webpack App</title>
+  </head>
+  <body>
+  <script type="text/javascript" src="./earthSmall.js"></script><script type="text/javascript" src="./sw.js"></script><script type="text/javascript" src="./registerSW.js"></script></body>
 </html>
