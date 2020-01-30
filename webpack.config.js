@@ -10,6 +10,7 @@ module.exports = {
         grid: './src/pages/grid/index.js',
         circle: './src/pages/circle/index.js',
         sw: './src/sw.js',
+        registerSW: './src/registerSW.js',
     },
     mode: "development",
     plugins: [
@@ -19,7 +20,7 @@ module.exports = {
         }),
         new HtmlWebpackPlugin({
             filename: 'earth-small.html',
-            chunks: ['earthSmall', 'sw'],
+            chunks: ['earthSmall', 'registerSW', 'sw'],
         }),
         new HtmlWebpackPlugin({
             filename: 'grid.html',
