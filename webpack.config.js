@@ -1,13 +1,36 @@
 const path = require("path");
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
     entry: {
         index: './src/pages/index.js',
-        earth: './src/pages/earth/index.js',
+        // earth: './src/pages/earth/index.js',
         earthSmall: './src/pages/earthSmall/index.js',
         grid: './src/pages/grid/index.js',
         circle: './src/pages/circle/index.js',
+        sw: './src/sw.js',
     },
+    mode: "development",
+    plugins: [
+        new HtmlWebpackPlugin({
+            filename: 'index.html',
+            chunks: ['index'],
+        }),
+        new HtmlWebpackPlugin({
+            filename: 'earth-small.html',
+            chunks: ['earthSmall', 'sw'],
+        }),
+        new HtmlWebpackPlugin({
+            filename: 'grid.html',
+            chunks: ['grid'],
+        }),
+        new HtmlWebpackPlugin({
+            filename: 'circle.html',
+            chunks: ['circle'],
+        }),
+        new CleanWebpackPlugin(),
+    ],
     output: {
         filename: "./[name].js",
         path: __dirname + '/dist'
